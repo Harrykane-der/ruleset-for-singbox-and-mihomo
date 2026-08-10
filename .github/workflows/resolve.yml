@@ -58,7 +58,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: 🚀 Update at ${{ steps.time.outputs.TIME }}
-          branch: rules
+          branch: rule_set
           skip_dirty_check: true
           push_options: '--force'
           create_branch: true
