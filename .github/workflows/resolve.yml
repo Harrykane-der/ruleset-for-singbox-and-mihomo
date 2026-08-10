@@ -45,7 +45,7 @@ jobs:
 
       - name: Clean up
         run: |
-          find . -maxdepth 1 ! -name 'output' -exec rm -rf {} +
+          find . -maxdepth 1 -name 'output' -exec rm -rf {} +
           mv output/* .
           rm -rf output
 
