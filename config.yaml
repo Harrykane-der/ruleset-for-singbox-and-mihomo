@@ -5,7 +5,7 @@
   upstream: &ablock_upstream
     ablock.json:
       type: http
-      url: https://raw.githubusercontent.com/Harrykane-der/my-output/refs/heads/main/ablock.json
+      url: https://raw.githubusercontent.com/Harrykane-der/my-rules/refs/heads/main/ablock.json
       format: json
       behavior: singbox
 
@@ -36,17 +36,17 @@
       behavior: domain  
     adblock:
       type: http
-      url: https://github.com/Harrykane-der/AdRules/raw/refs/heads/main/adoutput-mihomo.mrs
+      url: https://github.com/Harrykane-der/AdRules/raw/refs/heads/main/adrules-mihomo.mrs
       format: mrs
       behavior: domain
     httpdns:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/httpdns.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/httpdns.mrs
       format: mrs
       behavior: domain
     MetaCubeX-category-ads-all:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/category-ads-all.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ads-all.mrs
       format: mrs
       behavior: domain
     SagerNet_category-ads-all:
@@ -56,7 +56,7 @@
       behavior: singbox
     Yuu518_category-ads-all:
       type: http
-      url: https://github.com/Yuu518/sing-box-output/raw/refs/heads/rule_set/rule_set_site/category-ads-all.srs
+      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/category-ads-all.srs
       format: srs
       behavior: singbox
 
@@ -82,12 +82,12 @@
   upstream: &adblock_ip_upstream
     httpdns_ip:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/ipcidr/httpdns.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/ipcidr/httpdns.mrs
       format: mrs
       behavior: ipcidr
-    adoutput_ip:
+    adrules_ip:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/ipcidr/adoutput.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/ipcidr/adrules.mrs
       format: mrs
       behavior: ipcidr
 
@@ -123,12 +123,12 @@
       behavior: classical
     category-ai-!cn:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/category-ai-!cn.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ai-!cn.mrs
       format: mrs
       behavior: domain
     QuixoticHeart_AI:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/ai.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/ai.mrs
       format: mrs
       behavior: domain
     local_ai:
@@ -159,17 +159,17 @@
   upstream: &bilibili_upstream
     DustinWin_bilibili:
       type: http
-      url: https://github.com/DustinWin/outputet_geodata/releases/download/mihomo-outputet/bilibili.mrs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/bilibili.mrs
       format: mrs
       behavior: domain
     MetaCubeX_bilibili:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/bilibili.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/bilibili.mrs
       format: mrs
       behavior: domain
     QuixoticHeart_bilibili:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/bilibili.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/bilibili.mrs
       format: mrs
       behavior: domain
     SagerNet_bilibili:
@@ -200,7 +200,7 @@
   upstream: &bilibili_ip_upstream
     BiliBili_IP:
       type: http
-      url: https://github.com/usernamelessss/singbox_outputet_use/raw/refs/heads/main/rule/BiliBili/BiliBili_IP.srs
+      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/BiliBili/BiliBili_IP.srs
       format: srs
       behavior: singbox
 
@@ -226,7 +226,7 @@
   upstream: &bytedance_upstream
     MetaCubeX_bytedance:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/bytedance.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/bytedance.mrs
       format: mrs
       behavior: domain
     SagerNet_bytedance:
@@ -236,22 +236,22 @@
       behavior: singbox
     MetaCubeX_douyin:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/douyin.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/douyin.mrs
       format: mrs
       behavior: domain
     MetaCubeX_tiktok:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/tiktok.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tiktok.mrs
       format: mrs
       behavior: domain
     QuixoticHeart_donyin:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/douyin.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/douyin.mrs
       format: mrs
       behavior: domain
     QuixoticHeart_tiktok:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/tiktok.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/tiktok.mrs
       format: mrs
       behavior: domain
     SagerNet_douyin:
@@ -287,7 +287,7 @@
   upstream: &bytedance_ip_upstream
     ByteDance_IP:
       type: http
-      url: https://github.com/usernamelessss/singbox_outputet_use/raw/refs/heads/main/rule/ByteDance/ByteDance_IP.srs
+      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/ByteDance/ByteDance_IP.srs
       format: srs
       behavior: singbox
 
@@ -313,12 +313,12 @@
   upstream: &cn_upstream
     MetaCubeX_cn:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/cn.yaml
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/cn.yaml
       format: yaml
       behavior: domain      
     DustinWin_cn :
       type: http
-      url: https://github.com/DustinWin/outputet_geodata/releases/download/mihomo-outputet/cn.mrs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/cn.mrs
       format: mrs
       behavior: domain
     echs-top_cn:
@@ -359,12 +359,12 @@
   upstream: &cn_ip_upstream
     DustinWin_cn_ip :
       type: http
-      url: https://github.com/DustinWin/outputet_geodata/releases/download/mihomo-outputet/cnip.list
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/cnip.list
       format: text
       behavior: ipcidr
     geoip_cn:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geoip/cn.yaml
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/cn.yaml
       format: yaml
       behavior: ipcidr
     echs-top_cn_ip:
@@ -400,7 +400,7 @@
   upstream: &direct_emby_upstream
     direct_emby:
       type: http
-      url: https://github.com/Harrykane-der/my-output/raw/refs/heads/main/direct_emby.yaml
+      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/direct_emby.yaml
       format: yaml
       behavior: domain
 
@@ -427,22 +427,22 @@
   upstream: &fakeip_filter_upstream
     DustinWin_fake_ip_filter:
       type: http
-      url: https://github.com/DustinWin/outputet_geodata/releases/download/mihomo-outputet/fakeip-filter.list
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/fakeip-filter.list
       format: text
       behavior: classical
     QuixoticHeart_fake_ip_filter:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/fake-ip-filter.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/fake-ip-filter.mrs
       format: mrs
       behavior: domain
     wwqgtxx_fakeip-filter:
       type: http
-      url: https://raw.githubusercontent.com/wwqgtxx/clash-output/release/fakeip-filter.mrs
+      url: https://raw.githubusercontent.com/wwqgtxx/clash-rules/release/fakeip-filter.mrs
       format: mrs
       behavior: domain
     Harrykane-der_fake_ip_filter:
       type: http
-      url: https://github.com/Harrykane-der/my-output/raw/refs/heads/main/fakeip-filter.yaml
+      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/fakeip-filter.yaml
       format: yaml
       behavior: domain
 
@@ -469,7 +469,7 @@
   upstream: &game_upstream
     game:
       type: http
-      url: https://github.com/Harrykane-der/my-output/raw/refs/heads/main/game.yaml
+      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/game.yaml
       format: yaml
       behavior: domain
 
@@ -496,7 +496,7 @@
   upstream: &gfw_upstream
     telegram:
       type: http
-      url: https://outputet.skk.moe/Clash/non_ip/telegram.txt
+      url: https://ruleset.skk.moe/Clash/non_ip/telegram.txt
       format: text
       behavior: classical
     xndeye_proxy:
@@ -506,7 +506,7 @@
       behavior: classical
     gfw:
       type: http
-      url: https://raw.githubusercontent.com/MetaCubeX/meta-output-dat/refs/heads/meta/geo/geosite/gfw.mrs
+      url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/gfw.mrs
       format: mrs
       behavior: domain
     google_cn:
@@ -516,62 +516,62 @@
       behavior: classical
     DustinWin_proxy:
       type: http
-      url: https://github.com/DustinWin/outputet_geodata/releases/download/mihomo-outputet/proxy.mrs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/proxy.mrs
       format: mrs
       behavior: domain
     DustinWin_madia:
       type: http
-      url: https://github.com/DustinWin/outputet_geodata/releases/download/mihomo-outputet/media.mrs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/media.mrs
       format: mrs
       behavior: domain
     DustinWin_gfw:
       type: http
-      url: https://github.com/DustinWin/outputet_geodata/releases/download/mihomo-outputet/gfw.mrs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/gfw.mrs
       format: mrs
       behavior: domain
     MetaCubeX_tld-!cn:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/tld-!cn.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tld-!cn.mrs
       format: mrs
       behavior: domain
     MetaCubeX_geolocation-!cn:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/geolocation-!cn.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-!cn.mrs
       format: mrs
       behavior: domain
     MetaCubeX_gfw:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/gfw.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/gfw.mrs
       format: mrs
       behavior: domain
     QuixoticHeart_tld_proxy:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/tld-proxy.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/tld-proxy.mrs
       format: mrs
       behavior: domain
     QuixoticHeart_iplocation_proxy:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/iplocation-proxy.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/iplocation-proxy.mrs
       format: mrs
       behavior: domain
     QuixoticHeart_proxy:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/proxy.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/proxy.mrs
       format: mrs
       behavior: domain
     QuixoticHeart_gfw:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/gfw.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/gfw.mrs
       format: mrs
       behavior: domain
     QuixoticHeart_github:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/gits.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/gits.mrs
       format: mrs
       behavior: domain
     MetaCubeX_github:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/github.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/github.mrs
       format: mrs
       behavior: domain
     SagerNet_github:
@@ -591,12 +591,12 @@
       behavior: classical
     category-ai-!cn:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/category-ai-!cn.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ai-!cn.mrs
       format: mrs
       behavior: domain
     QuixoticHeart_AI:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/ai.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/ai.mrs
       format: mrs
       behavior: domain
     local_ai:
@@ -627,12 +627,12 @@
   upstream: &github_upstream
     QuixoticHeart_github:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/gits.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/gits.mrs
       format: mrs
       behavior: domain
     MetaCubeX_github:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/github.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/github.mrs
       format: mrs
       behavior: domain
     SagerNet_github:
@@ -663,7 +663,7 @@
   upstream: &google_cn_upstream
     google_cn:
       type: http
-      url: https://github.com/DustinWin/outputet_geodata/releases/download/sing-box-outputet/google-cn.srs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/google-cn.srs
       format: srs
       behavior: singbox
 
@@ -689,7 +689,7 @@
   upstream: &google_upstream
     google:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/singbox/version5/google.srs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/singbox/version5/google.srs
       format: srs
       behavior: singbox
 
@@ -715,7 +715,7 @@
   upstream: &google_fcm_upstream
     google_fcm:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/googlefcm.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/googlefcm.mrs
       format: mrs
       behavior: domain
 
@@ -741,7 +741,7 @@
   upstream: &google_fcm_ip_upstream
     GoogleFCM_IP:
       type: http
-      url: https://github.com/usernamelessss/singbox_outputet_use/raw/refs/heads/main/rule/GoogleFCM/GoogleFCM_IP.srs
+      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/GoogleFCM/GoogleFCM_IP.srs
       format: srs
       behavior: singbox
 
@@ -767,12 +767,12 @@
   upstream: &google_ip_upstream
     google_ip:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geoip/google.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/google.mrs
       format: mrs
       behavior: ipcidr
     Google_IP:
       type: http
-      url: https://github.com/usernamelessss/singbox_outputet_use/raw/refs/heads/main/rule/Google/Google_IP.srs
+      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/Google/Google_IP.srs
       format: srs
       behavior: singbox
 
@@ -798,17 +798,17 @@
   upstream: &media_upstream
     DustinWin_media:
       type: http
-      url: https://github.com/DustinWin/outputet_geodata/releases/download/mihomo-outputet/media.mrs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/media.mrs
       format: mrs
       behavior: domain
     MetaCubeX_media:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geosite/category-media.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-media.mrs
       format: mrs
       behavior: domain
     QuixoticHeart_media:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/outputet/meta/domain/socialmedia.mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/socialmedia.mrs
       format: mrs
       behavior: domain
     SagerNet_category_media:
@@ -839,12 +839,12 @@
   upstream: &media_ip_upstream
     mediaip:
       type: http
-      url: https://github.com/DustinWin/outputet_geodata/releases/download/mihomo-outputet/mediaip.mrs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/mediaip.mrs
       format: mrs
       behavior: ipcidr
     GlobalMedia_IP:
       type: http
-      url: https://github.com/usernamelessss/singbox_outputet_use/raw/refs/heads/main/rule/GlobalMedia/GlobalMedia_IP.srs
+      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/GlobalMedia/GlobalMedia_IP.srs
       format: srs
       behavior: singbox
 
@@ -870,7 +870,7 @@
   upstream: &pixiv_upstream
     pixiv:
       type: http
-      url: https://github.com/Yuu518/sing-box-output/raw/refs/heads/rule_set/rule_set_site/pixiv.srs
+      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/pixiv.srs
       format: srs
       behavior: singbox
 
@@ -896,7 +896,7 @@
   upstream: &proxy_emby_upstream
     proxy_emby:
       type: http
-      url: https://github.com/Harrykane-der/my-output/raw/refs/heads/main/proxy_emby.yaml
+      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/proxy_emby.yaml
       format: yaml
       behavior: domain
 
@@ -923,7 +923,7 @@
   upstream: &telegram_upstream
     telegram:
       type: http
-      url: https://github.com/MetaCubeX//meta-output-dat/raw/refs/heads/meta/geo-lite/geosite/telegram.mrs
+      url: https://github.com/MetaCubeX//meta-rules-dat/raw/refs/heads/meta/geo-lite/geosite/telegram.mrs
       format: mrs
       behavior: domain
 
@@ -949,7 +949,7 @@
   upstream: &telegram_ip_upstream
     telegram_ip:
       type: http
-      url: https://github.com/DustinWin/outputet_geodata/releases/download/sing-box-outputet/telegramip.srs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/telegramip.srs
       format: srs
       behavior: singbox
 
@@ -975,7 +975,7 @@
   upstream: &twitter_upstream
     twitter:
       type: http
-      url: https://github.com/Yuu518/sing-box-output/raw/refs/heads/rule_set/rule_set_site/twitter.srs
+      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/twitter.srs
       format: srs
       behavior: singbox
 
@@ -1001,12 +1001,12 @@
   upstream: &twitter_ip_upstream
     twitter_ip:
       type: http
-      url: https://github.com/MetaCubeX/meta-output-dat/raw/refs/heads/meta/geo/geoip/twitter.mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/twitter.mrs
       format: mrs
       behavior: ipcidr
     Twitter_IP:
       type: http
-      url: https://github.com/usernamelessss/singbox_outputet_use/raw/refs/heads/main/rule/Twitter/Twitter_IP.srs
+      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/Twitter/Twitter_IP.srs
       format: srs
       behavior: singbox
 
@@ -1032,7 +1032,7 @@
   upstream: &whitelist_upstream
     whitelist:
       type: http
-      url: https://github.com/Harrykane-der/my-output/raw/refs/heads/main/whitelist.yaml
+      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/whitelist.yaml
       format: yaml
       behavior: domain
 
