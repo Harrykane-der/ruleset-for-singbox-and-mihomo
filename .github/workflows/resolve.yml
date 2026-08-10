@@ -45,9 +45,7 @@ jobs:
 
       - name: Clean up
         run: |
-          find . -maxdepth 1 -name 'output' -exec rm -rf {} +
-          mv output/* .
-          rm -rf output
+          find . -maxdepth 1 -type f -not -name 'output' -delete
 
       - name: Get current time
         id: time
