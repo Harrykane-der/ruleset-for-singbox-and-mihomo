@@ -59,6 +59,8 @@
 
 ## 规则集见
 
+ - https://github.com/Harrykane-der/ruleset-for-singbox-and-mihomo/tree/rule_set
+
 ## 引用来源
 
 - [Sukka Ruleset](https://ruleset.skk.moe)
