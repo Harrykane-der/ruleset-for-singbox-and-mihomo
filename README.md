@@ -49,13 +49,15 @@
 4. 配置 sing-box 路径 (使用 `srs` 格式必要条件)
    - 修改 `rule_merger.py` 的 `SING_BOX_PATH` 字段
    - 或将 `sing-box` 可执行文件加入 `/usr/local/bin/` 或 `$PATH` 环境变量中
-   - GitHub Actions 固定使用 sing-box `v1.13.13`，默认生成 rule-set version `4`
+   - GitHub Actions 固定使用 sing-box `v1.14`，默认生成 rule-set version `5`
 
 5. 执行脚本
 
    ```shell
    python rule_merger.py
    ```
+
+## 规则集见
 
 ## 引用来源
 
