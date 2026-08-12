@@ -71,7 +71,7 @@
 - [Harrykane-der/Harrykane-der](https://github.com/Harrykane-der/my-rules)
 - [Harrykane-der/Harrykane-der](https://github.com/Harrykane-der/AdRules)
 - [QuixoticHeart/QuixoticHeart](https://github.com/QuixoticHeart/rule-set)
-- [MetaCubeX/MetaCubeX](https://github.com/MetaCubeX/meta-rules-dat)
+- [MetaCubeX/MetaCubeX](https://github.com/MetaCubeX/meta-rules-dat/tree/meta)
 - [SagerNet/SagerNet](https://github.com/SagerNet/sing-geosite/tree/rule-set) 
 ---
 
