@@ -72,7 +72,9 @@
 - [Harrykane-der/Harrykane-der](https://github.com/Harrykane-der/AdRules)
 - [QuixoticHeart/QuixoticHeart](https://github.com/QuixoticHeart/rule-set)
 - [MetaCubeX/MetaCubeX](https://github.com/MetaCubeX/meta-rules-dat/tree/meta)
-- [SagerNet/SagerNet](https://github.com/SagerNet/sing-geosite/tree/rule-set) 
+- [SagerNet/SagerNet](https://github.com/SagerNet/sing-geosite/tree/rule-set)
+- [SagerNet/SagerNet](https://github.com/SagerNet/sing-geoip/tree/rule-set)
+- [blackmatrix7/blackmatrix7](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash)
 ---
 
 [^1]: **mihomo** 可用格式：`yaml`、`mrs`、`text`，**sing-box** 可用格式：`json`、`srs`
