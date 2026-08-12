@@ -54,7 +54,7 @@
 5. 执行脚本
 
    ```shell
-   python rule_merger.py
+   python rules_merger.py
    ```
 
 ## 规则集见
