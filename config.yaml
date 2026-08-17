@@ -33,7 +33,12 @@
       type: http
       url: https://github.com/xndeye/adblock_list/raw/refs/heads/release/clash.yaml
       format: yaml
-      behavior: domain  
+      behavior: domain
+    ACL4SSR_BanAD:
+      type: http
+      url: https://github.com/ACL4SSR/ACL4SSR/raw/refs/heads/master/Clash/BanAD.list
+      format: yaml
+      behavior: classical
     adblock:
       type: http
       url: https://github.com/Harrykane-der/AdRules/raw/refs/heads/main/adrules-mihomo.mrs
@@ -1035,6 +1040,11 @@
       url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/whitelist.yaml
       format: yaml
       behavior: domain
+    ACL4SSR_UNBAN:
+      type: http
+      url: https://github.com/ACL4SSR/ACL4SSR/raw/refs/heads/master/Clash/UnBan.list
+      format: yaml
+      behavior: classical   
 
 - path: output/whitelist_domain.yaml
   format: yaml
