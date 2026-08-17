@@ -8,7 +8,7 @@
 - [x] 支持 `yaml`、`mrs`、`text`、`json`、`srs` 文件格式 [^1]
 - [x] 支持 `domain`、`ipcidr`、`classical`、`sing-box` 规则格式
 - [x] 支持规则格式互转
-- [x] 相比原版增加了对port和domain_regex的转换
+- [x] 相比原版增加了对port和domain_regex规则的转换
 
 ## 如何使用
 
