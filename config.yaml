@@ -768,29 +768,11 @@
       format: yaml
       behavior: domain
 
-    appshubcc_bytedance:
+    appshubcc_github:
       type: http
-      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/bytedance.yaml
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/github.yaml
       format: yaml
       behavior: domain
-
-    appshubcc_tiktok:
-      type: http
-      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/tiktok.yaml
-      format: yaml
-      behavior: domain
-
-    appshubcc_douyin:
-      type: http
-      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/douyin.yaml
-      format: yaml
-      behavior: domain
-
-    local_ai:
-      type: file
-      path: local/ai.yaml
-      format: yaml
-      behavior: classical
 
 - path: output/gfw_domain.yaml
   format: yaml
@@ -1028,6 +1010,12 @@
       url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-media.mrs
       format: mrs
       behavior: domain
+      
+      MetaCubeX_media:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/category-media.list
+      format: yaml
+      behavior: domain
 
     QuixoticHeart_media:
       type: http
@@ -1040,6 +1028,12 @@
       url: https://github.com/SagerNet/sing-geosite/raw/refs/heads/rule-set/geosite-category-media.srs
       format: srs
       behavior: singbox
+      
+    appshubcc_github:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/netflix.list
+      format: yaml
+      behavior: domain
 
 - path: output/media_domain.yaml
   format: yaml
@@ -1085,6 +1079,12 @@
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo-lite/geoip/facebook.yaml
       format: yaml
       behavior: ipcidr
+    
+    appshubcc_github:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/category-social-media-!cn.yaml
+      format: yaml
+      behavior: domain
 
 - path: output/media_ip.yaml
   format: yaml
