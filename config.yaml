@@ -273,18 +273,6 @@
   format: mrs
   behavior: domain
   upstream: &bytedance_upstream
-    MetaCubeX_bytedance:
-      type: http
-      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/bytedance.mrs
-      format: mrs
-      behavior: domain
-
-    SagerNet_bytedance:
-      type: http
-      url: https://github.com/SagerNet/sing-geosite/raw/refs/heads/rule-set/geosite-bytedance.srs
-      format: srs
-      behavior: singbox
-
     MetaCubeX_douyin:
       type: http
       url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/douyin.mrs
@@ -321,11 +309,7 @@
       format: srs
       behavior: singbox
 
-    appshubcc_bytedance:
-      type: http
-      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/bytedance.yaml
-      format: yaml
-      behavior: domain
+
 
     appshubcc_tiktok:
       type: http
