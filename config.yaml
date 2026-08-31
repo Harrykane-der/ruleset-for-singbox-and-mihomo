@@ -268,11 +268,11 @@
   upstream: *bilibili_ip_upstream
 
 
-# bytedance_domain
-- path: output/bytedance_domain.mrs
+# tiktok_domain
+- path: output/tiktok_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &bytedance_upstream
+  upstream: &tiktok_upstream
     MetaCubeX_douyin:
       type: http
       url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/douyin.mrs
@@ -323,27 +323,27 @@
       format: yaml
       behavior: domain
 
-- path: output/bytedance_domain.yaml
+- path: output/tiktok_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *bytedance_upstream
+  upstream: *tiktok_upstream
 
-- path: output/bytedance_domain.json
+- path: output/tiktok_domain.json
   format: json
   behavior: sing-box
-  upstream: *bytedance_upstream
+  upstream: *tiktok_upstream
 
-- path: output/bytedance_domain.srs
+- path: output/tiktok_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *bytedance_upstream
+  upstream: *tiktok_upstream
 
 
-# bytedance_ip
-- path: output/bytedance_ip.mrs
+# tiktok_ip
+- path: output/tiktok_ip.mrs
   format: mrs
   behavior: ipcidr
-  upstream: &bytedance_ip_upstream
+  upstream: &tiktok_ip_upstream
     ByteDance_IP:
       type: http
       url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/ByteDance/ByteDance_IP.srs
@@ -362,20 +362,20 @@
       format: yaml
       behavior: ipcidr
 
-- path: output/bytedance_ip.yaml
+- path: output/tiktok_ip.yaml
   format: yaml
   behavior: ipcidr
-  upstream: *bytedance_ip_upstream
+  upstream: *tiktok_ip_upstream
 
-- path: output/bytedance_ip.json
+- path: output/tiktok_ip.json
   format: json
   behavior: sing-box
-  upstream: *bytedance_ip_upstream
+  upstream: *tiktok_ip_upstream
 
-- path: output/bytedance_ip.srs
+- path: output/tiktok_ip.srs
   format: srs
   behavior: sing-box
-  upstream: *bytedance_ip_upstream
+  upstream: *tiktok_ip_upstream
 
 
 # cn_domain
