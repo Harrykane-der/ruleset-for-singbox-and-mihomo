@@ -309,6 +309,12 @@
       format: srs
       behavior: singbox
 
+    local_tiktok:
+      type: file
+      path: local/tiktok.yaml
+      format: yaml
+      behavior: domain
+
 
 
     appshubcc_tiktok:
