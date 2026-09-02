@@ -1109,10 +1109,22 @@
       url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-media.yaml
       format: yaml
       behavior: domain
+    
+    MetaCubeX_category-media_domain:
+      type: http
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-social-media-!cn.yaml
+      format: yaml
+      behavior: domain  
 
     appshubcc_media_domain:
       type: http
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/category-media.list
+      format: yaml
+      behavior: domain
+      
+    appshubcc_category-social-media-!cn_domain:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/category-social-media-!cn.yaml
       format: yaml
       behavior: domain
 
@@ -1127,13 +1139,7 @@
       url: https://github.com/SagerNet/sing-geosite/raw/refs/heads/rule-set/geosite-category-media.srs
       format: srs
       behavior: singbox
-
-    appshubcc_netflix_domain:
-      type: http
-      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/netflix.list
-      format: yaml
-      behavior: domain
-
+     
     echs-top_media_domain:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/media.list
@@ -1149,18 +1155,6 @@
     Yuu518_category-social-media-!cn_domain:
       type: http
       url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/category-social-media-!cn.json
-      format: json
-      behavior: sing-box
-
-    Yuu518_instagram_domain:
-      type: http
-      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/instagram.json
-      format: json
-      behavior: sing-box
-
-    Yuu518_facebook_domain:
-      type: http
-      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/facebook.json
       format: json
       behavior: sing-box
 
@@ -1213,29 +1207,11 @@
       format: srs
       behavior: singbox
 
-    appshubcc_netflix_ip:
-      type: http
-      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo-lite/geoip/netflix.yaml
-      format: yaml
-      behavior: ipcidr
-
-    appshubcc_facebook_ip:
-      type: http
-      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo-lite/geoip/facebook.yaml
-      format: yaml
-      behavior: ipcidr
-
     echs-top_media_ip:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/ip/media.list
       format: yaml
       behavior: ipcidr
-
-    Yuu518_facebook_ip:
-      type: http
-      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_ip/facebook.json
-      format: json
-      behavior: sing-box
 
 - path: output/media_ip.yaml
   format: yaml
