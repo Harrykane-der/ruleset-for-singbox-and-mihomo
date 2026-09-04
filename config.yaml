@@ -555,9 +555,15 @@
       format: mrs
       behavior: domain
 
-    appshubcc_fakeip-filter_domain:
+    appshubcc_fakeip-filter_lite_domain:
       type: http
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo-lite/geosite/fakeip-filter.yaml
+      format: yaml
+      behavior: domain
+   
+    appshubcc_fakeip-filter_domain:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/fakeip-filter.yaml
       format: yaml
       behavior: domain
 
