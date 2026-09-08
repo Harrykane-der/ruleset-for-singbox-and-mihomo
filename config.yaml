@@ -53,20 +53,26 @@
 
     Harrykane-der_adblock_domain:
       type: http
-      url: https://github.com/Harrykane-der/AdRules/raw/refs/heads/main/adrules-mihomo.mrs
-      format: mrs
+      url: https://raw.githubusercontent.com/Harrykane-der/AdRules/refs/heads/main/adrules_domainset.txt
+      format: text
       behavior: domain
+
+    QuixoticHeart_adrules_domain:
+      type: http
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/adrules.list
+      format: text
+      behavior: ipcidr
 
     QuixoticHeart_httpdns_domain:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/httpdns.mrs
-      format: mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/httpdns.list
+      format: text
       behavior: domain
 
     MetaCubeX_category-ads-all_domain:
       type: http
-      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ads-all.mrs
-      format: mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ads-all.list
+      format: text
       behavior: domain
 
     SagerNet_category-ads-all_domain:
@@ -77,8 +83,8 @@
 
     Yuu518_category-ads-all_domain:
       type: http
-      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/category-ads-all.srs
-      format: srs
+      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/category-ads-all.json
+      format: json
       behavior: singbox
 
     appshubcc_category-ads-all_domain:
@@ -90,7 +96,7 @@
     echs-top_ads_domain:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/ads.list
-      format: yaml
+      format: text
       behavior: domain
 
     Loyalsoldier_reject-list_domain:
@@ -124,14 +130,8 @@
   upstream: &adblock_ip_upstream
     QuixoticHeart_httpdns_ip:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/ipcidr/httpdns.mrs
-      format: mrs
-      behavior: ipcidr
-
-    QuixoticHeart_adrules_ip:
-      type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/ipcidr/adrules.mrs
-      format: mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/ipcidr/httpdns.list
+      format: text
       behavior: ipcidr
 
 - path: output/adblock_ip.yaml
@@ -177,8 +177,8 @@
 
     QuixoticHeart_ai_domain:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/ai.mrs
-      format: mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/ai.list
+      format: text
       behavior: domain
 
     appshubcc_category-ai-!cn_domain:
@@ -190,7 +190,7 @@
     echs-top_ai_domain:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/ai.list
-      format: yaml
+      format: text
       behavior: domain
 
     Yuu518_category-ai-!cn_domain:
@@ -230,20 +230,20 @@
   upstream: &bilibili_domain_upstream
     DustinWin_bilibili_domain:
       type: http
-      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/bilibili.mrs
-      format: mrs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/bilibili.list
+      format: text
       behavior: domain
 
     MetaCubeX_bilibili_domain:
       type: http
-      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/bilibili.mrs
-      format: mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/bilibili.yaml
+      format: yaml
       behavior: domain
 
     QuixoticHeart_bilibili_domain:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/bilibili.mrs
-      format: mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/bilibili.list
+      format: text
       behavior: domain
 
     SagerNet_bilibili_domain:
@@ -295,8 +295,8 @@
   upstream: &bilibili_ip_upstream
     usernamelessss_bilibili_ip:
       type: http
-      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/BiliBili/BiliBili_IP.srs
-      format: srs
+      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/BiliBili/BiliBili_IP.json
+      format: json
       behavior: singbox
 
     appshubcc_bilibili_ip:
@@ -336,14 +336,14 @@
 
     DustinWin_cn_domain:
       type: http
-      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/cn.mrs
-      format: mrs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/cn.list
+      format: text
       behavior: domain
 
     echs-top_cn_domain:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/cn.list
-      format: yaml
+      format: text
       behavior: domain
 
     SagerNet_cn_domain:
@@ -358,16 +358,22 @@
       format: yaml
       behavior: domain
 
+    QuixoticHeart_cn_domain:
+      type: http
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/cn.list
+      format: text
+      behavior: domain
+
     echs-top_direct_domain:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/direct.list
-      format: yaml
+      format: text
       behavior: domain
 
     echs-top_dnsmasq-china_domain:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/dnsmasq-china.list
-      format: yaml
+      format: text
       behavior: domain
 
     Yuu518_cn_domain:
@@ -386,19 +392,13 @@
       type: http
       url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt
       format: text
-      behavior: classical
+      behavior: domain
 
     Loyalsoldier_china-list_domain:
       type: http
       url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/china-list.txt
       format: text
-      behavior: classical
-
-    local_direct_domain:
-      type: file
-      path: local/direct.yaml
-      format: yaml
-      behavior: classical
+      behavior: domain
 
 - path: output/cn_domain.yaml
   format: yaml
@@ -497,13 +497,13 @@
     echs-top_cn_ip:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/ip/cn.list
-      format: yaml
+      format: text
       behavior: ipcidr
 
     echs-top_direct_ip:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/ip/direct.list
-      format: yaml
+      format: text
       behavior: ipcidr
 
     SagerNet_cn_ip:
@@ -593,8 +593,8 @@
 
     QuixoticHeart_fakeip-filter_domain:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/fake-ip-filter.mrs
-      format: mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/fake-ip-filter.list
+      format: text
       behavior: domain
 
     wwqgtxx_fakeip-filter_domain:
@@ -693,68 +693,62 @@
 
     MetaCubeX_gfw_domain:
       type: http
-      url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/gfw.mrs
-      format: mrs
+      url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/gfw.yaml
+      format: yaml
       behavior: domain
 
     DustinWin_proxy_domain:
       type: http
-      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/proxy.mrs
-      format: mrs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/proxy.list
+      format: text
       behavior: domain
 
     DustinWin_gfw_domain:
       type: http
-      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/gfw.mrs
-      format: mrs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/gfw.list
+      format: text
       behavior: domain
 
     MetaCubeX_tld-!cn_domain:
       type: http
-      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tld-!cn.mrs
-      format: mrs
-      behavior: domain
-
-    MetaCubeX_geolocation-!cn_domain:
-      type: http
-      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-!cn.mrs
-      format: mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tld-!cn.yaml
+      format: yaml
       behavior: domain
 
     QuixoticHeart_tld-proxy_domain:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/tld-proxy.mrs
-      format: mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/tld-proxy.list
+      format: text
       behavior: domain
 
     QuixoticHeart_iplocation-proxy_domain:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/iplocation-proxy.mrs
-      format: mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/iplocation-proxy.list
+      format: text
       behavior: domain
 
     QuixoticHeart_proxy_domain:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/proxy.mrs
-      format: mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/proxy.list
+      format: text
       behavior: domain
 
     QuixoticHeart_gfw_domain:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/gfw.mrs
-      format: mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/gfw.list
+      format: text
       behavior: domain
 
     echs-top_tld-not-cn_domain:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/tld-not-cn.list
-      format: yaml
+      format: text
       behavior: domain
 
     echs-top_proxy_domain:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/proxy.list
-      format: yaml
+      format: text
       behavior: domain
 
     Yuu518_tld-!cn_domain:
@@ -831,14 +825,14 @@
   upstream: &github_domain_upstream
     QuixoticHeart_github_domain:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/gits.mrs
-      format: mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/gits.list
+      format: text
       behavior: domain
 
     MetaCubeX_github_domain:
       type: http
-      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/github.mrs
-      format: mrs
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/github.yaml
+      format: yaml
       behavior: domain
 
     SagerNet_github_domain:
@@ -891,9 +885,9 @@
   upstream: &google_cn_domain_upstream
     DustinWin_google-cn_domain:
       type: http
-      url: https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/google-cn.srs
-      format: srs
-      behavior: singbox
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/google-cn.list
+      format: text
+      behavior: domain
 
     MetaCubeX_google-cn_domain:
       type: http
@@ -951,9 +945,9 @@
   upstream: &google_domain_upstream
     QuixoticHeart_google_domain:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/singbox/version5/google.srs
-      format: srs
-      behavior: singbox
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/google.list
+      format: text
+      behavior: domain
 
     MetaCubeX_google_domain:
       type: http
@@ -970,7 +964,7 @@
     echs-top_google_domain:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/google.list
-      format: yaml
+      format: text
       behavior: domain
 
     Yuu518_google_domain:
@@ -1059,8 +1053,8 @@
   upstream: &google_fcm_ip_upstream
     usernamelessss_googlefcm_ip:
       type: http
-      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/GoogleFCM/GoogleFCM_IP.srs
-      format: srs
+      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/GoogleFCM/GoogleFCM_IP.json
+      format: json
       behavior: singbox
 
 - path: output/google_fcm_ip.yaml
@@ -1095,8 +1089,8 @@
 
     usernamelessss_google_ip:
       type: http
-      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/Google/Google_IP.srs
-      format: srs
+      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/Google/Google_IP.json
+      format: json
       behavior: singbox
 
     appshubcc_google_ip:
@@ -1108,7 +1102,7 @@
     echs-top_google_ip:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/ip/google.list
-      format: yaml
+      format: text
       behavior: ipcidr
 
     Yuu518_google_ip:
@@ -1150,8 +1144,8 @@
   upstream: &media_domain_upstream
     DustinWin_media_domain:
       type: http
-      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/media.mrs
-      format: mrs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/media.list
+      format: text
       behavior: domain
 
     MetaCubeX_category-media_domain:
@@ -1169,7 +1163,7 @@
     appshubcc_media_domain:
       type: http
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/category-media.list
-      format: yaml
+      format: text
       behavior: domain
 
     appshubcc_category-social-media-!cn_domain:
@@ -1180,8 +1174,8 @@
 
     QuixoticHeart_socialmedia_domain:
       type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/socialmedia.mrs
-      format: mrs
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/socialmedia.list
+      format: text
       behavior: domain
 
     SagerNet_category-media_domain:
@@ -1193,7 +1187,7 @@
     echs-top_media_domain:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/media.list
-      format: yaml
+      format: text
       behavior: domain
 
     Yuu518_category-media_domain:
@@ -1246,20 +1240,20 @@
   upstream: &media_ip_upstream
     DustinWin_media_ip:
       type: http
-      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/mediaip.mrs
-      format: mrs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/mediaip.list
+      format: text
       behavior: ipcidr
 
     usernamelessss_GlobalMedia_ip:
       type: http
-      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/GlobalMedia/GlobalMedia_IP.srs
-      format: srs
+      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/GlobalMedia/GlobalMedia_IP.json
+      format: json
       behavior: singbox
 
     echs-top_media_ip:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/ip/media.list
-      format: yaml
+      format: text
       behavior: ipcidr
 
 - path: output/media_ip.yaml
@@ -1414,7 +1408,7 @@
   upstream: &telegram_ip_upstream
     DustinWin_telegram_ip:
       type: http
-      url: https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/telegramip.srs
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/telegramip.list
       format: srs
       behavior: singbox
 
@@ -1445,7 +1439,7 @@
     echs-top_telegram_ip:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/ip/telegram.list
-      format: yaml
+      format: text
       behavior: ipcidr
 
 - path: output/telegram_ip.yaml
@@ -1660,8 +1654,8 @@
 
     usernamelessss_twitter_ip:
       type: http
-      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/Twitter/Twitter_IP.srs
-      format: srs
+      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/Twitter/Twitter_IP.json
+      format: json
       behavior: singbox
 
     Yuu518_twitter_ip:
@@ -1715,7 +1709,7 @@
     ACL4SSR_UNBAN_domain:
       type: http
       url: https://github.com/ACL4SSR/ACL4SSR/raw/refs/heads/master/Clash/UnBan.list
-      format: yaml
+      format: text
       behavior: classical
 
 - path: output/whitelist_domain.yaml
