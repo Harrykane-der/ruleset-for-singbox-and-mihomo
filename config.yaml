@@ -1,100 +1,103 @@
 # =============================================================
-# 规则集管理配置文件 - 包含所有规则合并块
+# 规则集管理配置文件
+# 第一部分：ablock / adblock / ai / bilibili / cn
 # =============================================================
-# 格式：基于 MiHomo / Sing-box / Clash / Classical 的多源规则聚合配置
-# 核心功能：自动合并各来源规则（domain / ipcidr / mrs / yaml / srs / json）
-# 支持：http/https 本地文件 upstream 混合
 
 # =============================================================
 # ablock_domain (广告/追踪域名黑名单)
 # =============================================================
-# 功能：阻挡所有广告、追踪、异常域名（用于全局 adblock）
-# 合并方式：http + upstream 自动合并为 mrs/json/yaml/srs
 - path: output/ablock_domain.mrs
   format: mrs
   behavior: domain
   upstream: &ablock_domain_upstream
-  # 优先级排序（从上到下）：Harrykane-der 主源 > 其它社区源
-  Harrykane-der_ablock_domain:
-    type: http
-    url: https://raw.githubusercontent.com/Harrykane-der/my-rules/refs/heads/main/ablock.json
-    format: json
-    behavior: singbox
+    Harrykane-der_ablock_domain:
+      type: http
+      url: https://raw.githubusercontent.com/Harrykane-der/my-rules/refs/heads/main/ablock.json
+      format: json
+      behavior: singbox
+
+- path: output/ablock_domain.yaml
+  format: yaml
+  behavior: domain
+  upstream: *ablock_domain_upstream
 
 - path: output/ablock_domain.json
   format: json
   behavior: sing-box
   upstream: *ablock_domain_upstream
 
-- path: output/ablock_domain.yaml
-  format: yaml
-  behavior: classical
+- path: output/ablock_domain.srs
+  format: srs
+  behavior: sing-box
   upstream: *ablock_domain_upstream
 
-- path: output/ablock_domain.mrs
-  format: mrs
-  behavior: domain
-  upstream: *ablock_domain_upstream
 
 # =============================================================
 # adblock_domain (广告域名黑名单 - 扩展版)
 # =============================================================
-# 功能：全网广告黑名单（包含 HTTPDNS、BanAD 等）
-# 合并方式：多源 domain 规则
 - path: output/adblock_domain.mrs
   format: mrs
   behavior: domain
   upstream: &adblock_domain_upstream
-  xndeye_adblock-list_domain:
-    type: http
-    url: https://github.com/xndeye/adblock_list/raw/refs/heads/release/clash.yaml
-    format: yaml
-    behavior: domain
-  ACL4SSR_BanAD_domain:
-    type: http
-    url: https://github.com/ACL4SSR/ACL4SSR/raw/refs/heads/master/Clash/BanAD.list
-    format: text
-    behavior: classical
-  Harrykane-der_adblock_domain:
-    type: http
-    url: https://github.com/Harrykane-der/AdRules/raw/refs/heads/main/adrules-mihomo.mrs
-    format: mrs
-    behavior: domain
-  QuixoticHeart_httpdns_domain:
-    type: http
-    url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/httpdns.mrs
-    format: mrs
-    behavior: domain
-  MetaCubeX_category-ads-all_domain:
-    type: http
-    url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ads-all.mrs
-    format: mrs
-    behavior: domain
-  SagerNet_category-ads-all_domain:
-    type: http
-    url: https://github.com/SagerNet/sing-geosite/raw/refs/heads/rule-set/geosite-category-ads-all.srs
-    format: srs
-    behavior: singbox
-  Yuu518_category-ads-all_domain:
-    type: http
-    url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/category-ads-all.srs
-    format: srs
-    behavior: singbox
-  appshubcc_category-ads-all_domain:
-    type: http
-    url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/category-ads-all.yaml
-    format: yaml
-    behavior: domain
-  echs-top_ads_domain:
-    type: http
-    url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/ads.list
-    format: yaml
-    behavior: domain
-  Loyalsoldier_reject-list_domain:
-    type: http
-    url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt
-    format: text
-    behavior: classical
+    xndeye_adblock-list_domain:
+      type: http
+      url: https://github.com/xndeye/adblock_list/raw/refs/heads/release/clash.yaml
+      format: yaml
+      behavior: domain
+
+    ACL4SSR_BanAD_domain:
+      type: http
+      url: https://github.com/ACL4SSR/ACL4SSR/raw/refs/heads/master/Clash/BanAD.list
+      format: text
+      behavior: classical
+
+    Harrykane-der_adblock_domain:
+      type: http
+      url: https://github.com/Harrykane-der/AdRules/raw/refs/heads/main/adrules-mihomo.mrs
+      format: mrs
+      behavior: domain
+
+    QuixoticHeart_httpdns_domain:
+      type: http
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/httpdns.mrs
+      format: mrs
+      behavior: domain
+
+    MetaCubeX_category-ads-all_domain:
+      type: http
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ads-all.mrs
+      format: mrs
+      behavior: domain
+
+    SagerNet_category-ads-all_domain:
+      type: http
+      url: https://github.com/SagerNet/sing-geosite/raw/refs/heads/rule-set/geosite-category-ads-all.srs
+      format: srs
+      behavior: singbox
+
+    Yuu518_category-ads-all_domain:
+      type: http
+      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/category-ads-all.srs
+      format: srs
+      behavior: singbox
+
+    appshubcc_category-ads-all_domain:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/category-ads-all.yaml
+      format: yaml
+      behavior: domain
+
+    echs-top_ads_domain:
+      type: http
+      url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/ads.list
+      format: yaml
+      behavior: domain
+
+    Loyalsoldier_reject-list_domain:
+      type: http
+      url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt
+      format: text
+      behavior: classical
 
 - path: output/adblock_domain.yaml
   format: yaml
@@ -104,95 +107,103 @@
 - path: output/adblock_domain.json
   format: json
   behavior: sing-box
-  upstream: *adlock_domain_upstream
+  upstream: *adblock_domain_upstream
 
 - path: output/adblock_domain.srs
   format: srs
-  behavior: singbox
-  upstream: *adlock_domain_upstream
+  behavior: sing-box
+  upstream: *adblock_domain_upstream
+
 
 # =============================================================
 # adblock_ip (广告 IP 黑名单)
 # =============================================================
-# 功能：阻挡广告/HTTPDNS IP 段
 - path: output/adblock_ip.mrs
   format: mrs
   behavior: ipcidr
   upstream: &adblock_ip_upstream
-  QuixoticHeart_httpdns_ip:
-    type: http
-    url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/ipcidr/httpdns.mrs
-    format: mrs
-    behavior: ipcidr
-  QuixoticHeart_adrules_ip:
-    type: http
-    url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/ipcidr/adrules.mrs
-    format: mrs
-    behavior: ipcidr
+    QuixoticHeart_httpdns_ip:
+      type: http
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/ipcidr/httpdns.mrs
+      format: mrs
+      behavior: ipcidr
+
+    QuixoticHeart_adrules_ip:
+      type: http
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/ipcidr/adrules.mrs
+      format: mrs
+      behavior: ipcidr
 
 - path: output/adblock_ip.yaml
   format: yaml
   behavior: ipcidr
-  upstream: *adlock_ip_upstream
+  upstream: *adblock_ip_upstream
 
 - path: output/adblock_ip.json
   format: json
   behavior: sing-box
-  upstream: *adlock_ip_upstream
+  upstream: *adblock_ip_upstream
 
 - path: output/adblock_ip.srs
   format: srs
-  behavior: singbox
-  upstream: *adlock_ip_upstream
+  behavior: sing-box
+  upstream: *adblock_ip_upstream
+
 
 # =============================================================
 # ai_domain (AI 相关域名)
 # =============================================================
-# 功能：阻挡 AI 搜索、图像生成、聊天机器人域名
 - path: output/ai_domain.mrs
   format: mrs
   behavior: domain
   upstream: &ai_domain_upstream
-  DustinWin_ai_domain:
-    type: http
-    url: https://github.com/DustinWin/domain-list-custom/releases/download/domains/ai.list
-    format: text
-    behavior: classical
-  ACL4SSR_ai_domain:
-    type: http
-    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/refs/heads/master/Clash/Ruleset/AI.list
-    format: text
-    behavior: classical
-  MetaCubeX_category-ai-!cn_domain:
-    type: http
-    url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ai-!cn.yaml
-    format: yaml
-    behavior: domain
-  QuixoticHeart_ai_domain:
-    type: http
-    url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/ai.mrs
-    format: mrs
-    behavior: domain
-  appshubcc_category-ai-!cn_domain:
-    type: http
-    url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/category-ai-!cn.yaml
-    format: yaml
-    behavior: domain
-  echs-top_ai_domain:
-    type: http
-    url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/ai.list
-    format: yaml
-    behavior: domain
-  Yuu518_category-ai-!cn_domain:
-    type: http
-    url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/category-ai-!cn.json
-    format: json
-    behavior: sing-box
-  lyc8503_category-ai-!cn_domain:
-    type: http
-    url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-category-ai-!cn.json
-    format: json
-    behavior: sing-box
+    DustinWin_ai_domain:
+      type: http
+      url: https://github.com/DustinWin/domain-list-custom/releases/download/domains/ai.list
+      format: text
+      behavior: classical
+
+    ACL4SSR_ai_domain:
+      type: http
+      url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/refs/heads/master/Clash/Ruleset/AI.list
+      format: text
+      behavior: classical
+
+    MetaCubeX_category-ai-!cn_domain:
+      type: http
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ai-!cn.yaml
+      format: yaml
+      behavior: domain
+
+    QuixoticHeart_ai_domain:
+      type: http
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/ai.mrs
+      format: mrs
+      behavior: domain
+
+    appshubcc_category-ai-!cn_domain:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/category-ai-!cn.yaml
+      format: yaml
+      behavior: domain
+
+    echs-top_ai_domain:
+      type: http
+      url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/ai.list
+      format: yaml
+      behavior: domain
+
+    Yuu518_category-ai-!cn_domain:
+      type: http
+      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/category-ai-!cn.json
+      format: json
+      behavior: sing-box
+
+    lyc8503_category-ai-!cn_domain:
+      type: http
+      url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-category-ai-!cn.json
+      format: json
+      behavior: sing-box
 
 - path: output/ai_domain.yaml
   format: yaml
@@ -209,49 +220,55 @@
   behavior: sing-box
   upstream: *ai_domain_upstream
 
+
 # =============================================================
 # bilibili_domain (哔哩哔哩相关域名)
 # =============================================================
-# 功能：哔哩哔哩 + 相关视频/直播域名
 - path: output/bilibili_domain.mrs
   format: mrs
   behavior: domain
   upstream: &bilibili_domain_upstream
-  DustinWin_bilibili_domain:
-    type: http
-    url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/bilibili.mrs
-    format: mrs
-    behavior: domain
-  MetaCubeX_bilibili_domain:
-    type: http
-    url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/bilibili.mrs
-    format: mrs
-    behavior: domain
-  QuixoticHeart_bilibili_domain:
-    type: http
-    url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/bilibili.mrs
-    format: mrs
-    behavior: domain
-  SagerNet_bilibili_domain:
-    type: http
-    url: https://github.com/SagerNet/sing-geosite/raw/refs/heads/rule-set/geosite-bilibili.srs
-    format: srs
-    behavior: singbox
-  appshubcc_bilibili_domain:
-    type: http
-    url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/bilibili.yaml
-    format: yaml
-    behavior: domain
-  Yuu518_bilibili_domain:
-    type: http
-    url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/bilibili.json
-    format: json
-    behavior: sing-box
-  lyc8503_bilibili_domain:
-    type: http
-    url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-bilibili.json
-    format: json
-    behavior: sing-box
+    DustinWin_bilibili_domain:
+      type: http
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/bilibili.mrs
+      format: mrs
+      behavior: domain
+
+    MetaCubeX_bilibili_domain:
+      type: http
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/bilibili.mrs
+      format: mrs
+      behavior: domain
+
+    QuixoticHeart_bilibili_domain:
+      type: http
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/bilibili.mrs
+      format: mrs
+      behavior: domain
+
+    SagerNet_bilibili_domain:
+      type: http
+      url: https://github.com/SagerNet/sing-geosite/raw/refs/heads/rule-set/geosite-bilibili.srs
+      format: srs
+      behavior: singbox
+
+    appshubcc_bilibili_domain:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/bilibili.yaml
+      format: yaml
+      behavior: domain
+
+    Yuu518_bilibili_domain:
+      type: http
+      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/bilibili.json
+      format: json
+      behavior: sing-box
+
+    lyc8503_bilibili_domain:
+      type: http
+      url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-bilibili.json
+      format: json
+      behavior: sing-box
 
 - path: output/bilibili_domain.yaml
   format: yaml
@@ -268,24 +285,25 @@
   behavior: sing-box
   upstream: *bilibili_domain_upstream
 
+
 # =============================================================
 # bilibili_ip (哔哩哔哩 IP 段)
 # =============================================================
-# 功能：哔哩哔哩 IPCIDR 黑名单
 - path: output/bilibili_ip.mrs
   format: mrs
   behavior: ipcidr
   upstream: &bilibili_ip_upstream
-  usernamelessss_bilibili_ip:
-    type: http
-    url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/BiliBili/BiliBili_IP.srs
-    format: srs
-    behavior: singbox
-  appshubcc_bilibili_ip:
-    type: http
-    url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo-lite/geoip/bilibili.yaml
-    format: yaml
-    behavior: ipcidr
+    usernamelessss_bilibili_ip:
+      type: http
+      url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/BiliBili/BiliBili_IP.srs
+      format: srs
+      behavior: singbox
+
+    appshubcc_bilibili_ip:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo-lite/geoip/bilibili.yaml
+      format: yaml
+      behavior: ipcidr
 
 - path: output/bilibili_ip.yaml
   format: yaml
@@ -302,74 +320,85 @@
   behavior: sing-box
   upstream: *bilibili_ip_upstream
 
+
 # =============================================================
 # cn_domain (中国大陆域名)
 # =============================================================
-# 功能：中国大陆直连域名（包括特殊规则）
 - path: output/cn_domain.mrs
   format: mrs
   behavior: domain
   upstream: &cn_domain_upstream
-  MetaCubeX_cn_domain:
-    type: http
-    url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/cn.yaml
-    format: yaml
-    behavior: domain
-  DustinWin_cn_domain:
-    type: http
-    url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/cn.mrs
-    format: mrs
-    behavior: domain
-  echs-top_cn_domain:
-    type: http
-    url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/cn.list
-    format: yaml
-    behavior: domain
-  SagerNet_cn_domain:
-    type: http
-    url: https://github.com/SagerNet/sing-geosite/raw/refs/heads/rule-set/geosite-cn.srs
-    format: srs
-    behavior: singbox
-  appshubcc_cn_domain:
-    type: http
-    url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo-lite/geosite/cn.yaml
-    format: yaml
-    behavior: domain
-  echs-top_direct_domain:
-    type: http
-    url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/direct.list
-    format: yaml
-    behavior: domain
-  echs-top_dnsmasq-china_domain:
-    type: http
-    url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/dnsmasq-china.list
-    format: yaml
-    behavior: domain
-  Yuu518_cn_domain:
-    type: http
-    url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/cn.json
-    format: json
-    behavior: sing-box
-  lyc8503_cn_domain:
-    type: http
-    url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-cn.json
-    format: json
-    behavior: sing-box
-  Loyalsoldier_direct-list_domain:
-    type: http
-    url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt
-    format: text
-    behavior: classical
-  Loyalsoldier_china-list_domain:
-    type: http
-    url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/china-list.txt
-    format: text
-    behavior: classical
-  local_direct_domain:
-    type: file
-    path: local/direct.yaml
-    format: yaml
-    behavior: classical
+    MetaCubeX_cn_domain:
+      type: http
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/cn.yaml
+      format: yaml
+      behavior: domain
+
+    DustinWin_cn_domain:
+      type: http
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/cn.mrs
+      format: mrs
+      behavior: domain
+
+    echs-top_cn_domain:
+      type: http
+      url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/cn.list
+      format: yaml
+      behavior: domain
+
+    SagerNet_cn_domain:
+      type: http
+      url: https://github.com/SagerNet/sing-geosite/raw/refs/heads/rule-set/geosite-cn.srs
+      format: srs
+      behavior: singbox
+
+    appshubcc_cn_domain:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo-lite/geosite/cn.yaml
+      format: yaml
+      behavior: domain
+
+    echs-top_direct_domain:
+      type: http
+      url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/direct.list
+      format: yaml
+      behavior: domain
+
+    echs-top_dnsmasq-china_domain:
+      type: http
+      url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/dnsmasq-china.list
+      format: yaml
+      behavior: domain
+
+    Yuu518_cn_domain:
+      type: http
+      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/cn.json
+      format: json
+      behavior: sing-box
+
+    lyc8503_cn_domain:
+      type: http
+      url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-cn.json
+      format: json
+      behavior: sing-box
+
+    Loyalsoldier_direct-list_domain:
+      type: http
+      url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt
+      format: text
+      behavior: classical
+
+    Loyalsoldier_china-list_domain:
+      type: http
+      url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/china-list.txt
+      format: text
+      behavior: classical
+
+    local_direct_domain:
+      type: file
+      path: local/direct.yaml
+      format: yaml
+      behavior: classical
 
 - path: output/cn_domain.yaml
   format: yaml
@@ -386,44 +415,49 @@
   behavior: sing-box
   upstream: *cn_domain_upstream
 
+
 # =============================================================
 # cn_lite_domain (精简中国大陆域名)
 # =============================================================
-# 功能：轻量级中国大陆直连规则（geoip + geosite 合并）
 - path: output/cn_lite_domain.mrs
   format: mrs
   behavior: domain
   upstream: &cn_lite_domain_upstream
-  SagerNet_geolocation-cn_domain:
-    type: http
-    url: https://github.com/SagerNet/sing-geosite/raw/refs/heads/rule-set/geosite-geolocation-cn.srs
-    format: srs
-    behavior: singbox
-  DustinWin_cn-lite_domain:
-    type: http
-    url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/cn-lite.list
-    format: text
-    behavior: classical
-  Yuu518_geolocation-cn_domain:
-    type: http
-    url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/geolocation-cn.json
-    format: json
-    behavior: sing-box
-  lyc8503_geolocation-cn_domain:
-    type: http
-    url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-geolocation-cn.json
-    format: json
-    behavior: sing-box
-  MetaCubeX_geolocation-cn_domain:
-    type: http
-    url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-cn.yaml
-    format: yaml
-    behavior: domain
-  appshubcc_geolocation-cn_domain:
-    type: http
-    url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/geolocation-cn.yaml
-    format: yaml
-    behavior: domain
+    SagerNet_geolocation-cn_domain:
+      type: http
+      url: https://github.com/SagerNet/sing-geosite/raw/refs/heads/rule-set/geosite-geolocation-cn.srs
+      format: srs
+      behavior: singbox
+
+    DustinWin_cn-lite_domain:
+      type: http
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/cn-lite.list
+      format: text
+      behavior: classical
+
+    Yuu518_geolocation-cn_domain:
+      type: http
+      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/geolocation-cn.json
+      format: json
+      behavior: sing-box
+
+    lyc8503_geolocation-cn_domain:
+      type: http
+      url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-geolocation-cn.json
+      format: json
+      behavior: sing-box
+
+    MetaCubeX_geolocation-cn_domain:
+      type: http
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-cn.yaml
+      format: yaml
+      behavior: domain
+
+    appshubcc_geolocation-cn_domain:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/geolocation-cn.yaml
+      format: yaml
+      behavior: domain
 
 - path: output/cn_lite_domain.yaml
   format: yaml
@@ -440,54 +474,61 @@
   behavior: sing-box
   upstream: *cn_lite_domain_upstream
 
+
 # =============================================================
 # cn_ip (中国大陆 IP 段)
 # =============================================================
-# 功能：中国大陆直连 IPCIDR
 - path: output/cn_ip.mrs
   format: mrs
   behavior: ipcidr
   upstream: &cn_ip_upstream
-  DustinWin_cn_ip:
-    type: http
-    url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/cnip.list
-    format: text
-    behavior: ipcidr
-  MetaCubeX_cn_ip:
-    type: http
-    url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/cn.yaml
-    format: yaml
-    behavior: ipcidr
-  echs-top_cn_ip:
-    type: http
-    url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/ip/cn.list
-    format: yaml
-    behavior: ipcidr
-  echs-top_direct_ip:
-    type: http
-    url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/ip/direct.list
-    format: yaml
-    behavior: ipcidr
-  SagerNet_cn_ip:
-    type: http
-    url: https://github.com/SagerNet/sing-geoip/raw/refs/heads/rule-set/geoip-cn.srs
-    format: srs
-    behavior: singbox
-  appshubcc_cn_ip:
-    type: http
-    url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo-lite/geoip/cn.yaml
-    format: yaml
-    behavior: ipcidr
-  Yuu518_cn_ip:
-    type: http
-    url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_ip/cn.json
-    format: json
-    behavior: sing-box
-  lyc8503_cn_ip:
-    type: http
-    url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geoip/geoip-cn.json
-    format: json
-    behavior: sing-box
+    DustinWin_cn_ip:
+      type: http
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/cnip.list
+      format: text
+      behavior: ipcidr
+
+    MetaCubeX_cn_ip:
+      type: http
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/cn.yaml
+      format: yaml
+      behavior: ipcidr
+
+    echs-top_cn_ip:
+      type: http
+      url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/ip/cn.list
+      format: yaml
+      behavior: ipcidr
+
+    echs-top_direct_ip:
+      type: http
+      url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/ip/direct.list
+      format: yaml
+      behavior: ipcidr
+
+    SagerNet_cn_ip:
+      type: http
+      url: https://github.com/SagerNet/sing-geoip/raw/refs/heads/rule-set/geoip-cn.srs
+      format: srs
+      behavior: singbox
+
+    appshubcc_cn_ip:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo-lite/geoip/cn.yaml
+      format: yaml
+      behavior: ipcidr
+
+    Yuu518_cn_ip:
+      type: http
+      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_ip/cn.json
+      format: json
+      behavior: sing-box
+
+    lyc8503_cn_ip:
+      type: http
+      url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geoip/geoip-cn.json
+      format: json
+      behavior: sing-box
 
 - path: output/cn_ip.yaml
   format: yaml
@@ -507,16 +548,16 @@
 # =============================================================
 # direct_emby_domain (Emby 直连域名)
 # =============================================================
-# 功能：Emby 家庭媒体服务器直连规则
+
 - path: output/direct_emby_domain.mrs
   format: mrs
   behavior: domain
   upstream: &direct_emby_domain_upstream
-  Harrykane-der_direct_emby_domain:
-    type: http
-    url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/direct_emby.yaml
-    format: yaml
-    behavior: domain
+    Harrykane-der_direct_emby_domain:
+      type: http
+      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/direct_emby.yaml
+      format: yaml
+      behavior: domain
 
 - path: output/direct_emby_domain.yaml
   format: yaml
@@ -533,44 +574,52 @@
   behavior: sing-box
   upstream: *direct_emby_domain_upstream
 
+
 # =============================================================
 # fakeip-filter_domain (FakeIP 过滤域名)
 # =============================================================
 # 功能：FakeIP 模式下需过滤的域名
+# =============================================================
+
 - path: output/fakeip-filter_domain.mrs
   format: mrs
   behavior: domain
   upstream: &fakeip-filter_domain_upstream
-  DustinWin_fakeip-filter_domain:
-    type: http
-    url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/fakeip-filter.list
-    format: text
-    behavior: classical
-  QuixoticHeart_fakeip-filter_domain:
-    type: http
-    url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/fake-ip-filter.mrs
-    format: mrs
-    behavior: domain
-  wwqgtxx_fakeip-filter_domain:
-    type: http
-    url: https://raw.githubusercontent.com/wwqgtxx/clash-rules/release/fakeip-filter.mrs
-    format: mrs
-    behavior: domain
-  appshubcc_fakeip-filter_lite_domain:
-    type: http
-    url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo-lite/geosite/fakeip-filter.yaml
-    format: yaml
-    behavior: domain
-  appshubcc_fakeip-filter_domain:
-    type: http
-    url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/fakeip-filter.yaml
-    format: yaml
-    behavior: domain
-  Harrykane-der_fakeip-filter_domain:
-    type: http
-    url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/fakeip-filter.yaml
-    format: yaml
-    behavior: domain
+    DustinWin_fakeip-filter_domain:
+      type: http
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/fakeip-filter.list
+      format: text
+      behavior: classical
+
+    QuixoticHeart_fakeip-filter_domain:
+      type: http
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/fake-ip-filter.mrs
+      format: mrs
+      behavior: domain
+
+    wwqgtxx_fakeip-filter_domain:
+      type: http
+      url: https://raw.githubusercontent.com/wwqgtxx/clash-rules/release/fakeip-filter.mrs
+      format: mrs
+      behavior: domain
+
+    appshubcc_fakeip-filter_lite_domain:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo-lite/geosite/fakeip-filter.yaml
+      format: yaml
+      behavior: domain
+
+    appshubcc_fakeip-filter_domain:
+      type: http
+      url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/fakeip-filter.yaml
+      format: yaml
+      behavior: domain
+
+    Harrykane-der_fakeip-filter_domain:
+      type: http
+      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/fakeip-filter.yaml
+      format: yaml
+      behavior: domain
 
 - path: output/fakeip-filter_domain.yaml
   format: yaml
@@ -587,19 +636,22 @@
   behavior: sing-box
   upstream: *fakeip-filter_domain_upstream
 
+
 # =============================================================
 # game_domain (游戏相关域名)
 # =============================================================
 # 功能：游戏启动/加速域名
+# =============================================================
+
 - path: output/game_domain.mrs
   format: mrs
   behavior: domain
   upstream: &game_domain_upstream
-  Harrykane-der_game_domain:
-    type: http
-    url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/game.yaml
-    format: yaml
-    behavior: domain
+    Harrykane-der_game_domain:
+      type: http
+      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/game.yaml
+      format: yaml
+      behavior: domain
 
 - path: output/game_domain.yaml
   format: yaml
@@ -616,119 +668,142 @@
   behavior: sing-box
   upstream: *game_domain_upstream
 
+
 # =============================================================
-# gfw_domain (GFW 规则 - 全局代理)
+# gfw_domain (GFW 规则)
 # =============================================================
-# 功能：GFW / 境外代理域名（推荐直连或规则加速模式）
+# 功能：GFW / 境外代理域名
+# =============================================================
+
 - path: output/gfw_domain.mrs
   format: mrs
   behavior: domain
   upstream: &gfw_domain_upstream
-  SKK_telegram_domain:
-    type: http
-    url: https://ruleset.skk.moe/Clash/non_ip/telegram.txt
-    format: text
-    behavior: classical
-  xndeye_proxy_domain:
-    type: file
-    path: local/proxy.yaml
-    format: yaml
-    behavior: classical
-  MetaCubeX_gfw_domain:
-    type: http
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/gfw.mrs
-    format: mrs
-    behavior: domain
-  DustinWin_proxy_domain:
-    type: http
-    url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/proxy.mrs
-    format: mrs
-    behavior: domain
-  DustinWin_gfw_domain:
-    type: http
-    url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/gfw.mrs
-    format: mrs
-    behavior: domain
-  MetaCubeX_tld-!cn_domain:
-    type: http
-    url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tld-!cn.mrs
-    format: mrs
-    behavior: domain
-  MetaCubeX_geolocation-!cn_domain:
-    type: http
-    url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-!cn.mrs
-    format: mrs
-    behavior: domain
-  QuixoticHeart_tld-proxy_domain:
-    type: http
-    url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/tld-proxy.mrs
-    format: mrs
-    behavior: domain
-  QuixoticHeart_iplocation-proxy_domain:
-    type: http
-    url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/iplocation-proxy.mrs
-    format: mrs
-    behavior: domain
-  QuixoticHeart_proxy_domain:
-    type: http
-    url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/proxy.mrs
-    format: mrs
-    behavior: domain
-  QuixoticHeart_gfw_domain:
-    type: http
-    url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/gfw.mrs
-    format: mrs
-    behavior: domain
-  echs-top_tld-not-cn_domain:
-    type: http
-    url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/tld-not-cn.list
-    format: yaml
-    behavior: domain
-  echs-top_proxy_domain:
-    type: http
-    url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/proxy.list
-    format: yaml
-    behavior: domain
-  Yuu518_tld-!cn_domain:
-    type: http
-    url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/tld-!cn.json
-    format: json
-    behavior: sing-box
-  Yuu518_gfw_domain:
-    type: http
-    url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/gfw.json
-    format: json
-    behavior: sing-box
-  Yuu518_geolocation-!cn_domain:
-    type: http
-    url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/geolocation-!cn.json
-    format: json
-    behavior: sing-box
-  lyc8503_gfw_domain:
-    type: http
-    url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-gfw.json
-    format: json
-    behavior: sing-box
-  lyc8503_tld-!cn_domain:
-    type: http
-    url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-tld-!cn.json
-    format: json
-    behavior: sing-box
-  lyc8503_geolocation-!cn_domain:
-    type: http
-    url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-geolocation-!cn.json
-    format: json
-    behavior: sing-box
-  Loyalsoldier_proxy-list_domain:
-    type: http
-    url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt
-    format: text
-    behavior: classical
-  Loyalsoldier_gfw_domain:
-    type: http
-    url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt
-    format: text
-    behavior: classical
+    SKK_telegram_domain:
+      type: http
+      url: https://ruleset.skk.moe/Clash/non_ip/telegram.txt
+      format: text
+      behavior: classical
+
+    xndeye_proxy_domain:
+      type: file
+      path: local/proxy.yaml
+      format: yaml
+      behavior: classical
+
+    MetaCubeX_gfw_domain:
+      type: http
+      url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/gfw.mrs
+      format: mrs
+      behavior: domain
+
+    DustinWin_proxy_domain:
+      type: http
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/proxy.mrs
+      format: mrs
+      behavior: domain
+
+    DustinWin_gfw_domain:
+      type: http
+      url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/gfw.mrs
+      format: mrs
+      behavior: domain
+
+    MetaCubeX_tld-!cn_domain:
+      type: http
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tld-!cn.mrs
+      format: mrs
+      behavior: domain
+
+    MetaCubeX_geolocation-!cn_domain:
+      type: http
+      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-!cn.mrs
+      format: mrs
+      behavior: domain
+
+    QuixoticHeart_tld-proxy_domain:
+      type: http
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/tld-proxy.mrs
+      format: mrs
+      behavior: domain
+
+    QuixoticHeart_iplocation-proxy_domain:
+      type: http
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/iplocation-proxy.mrs
+      format: mrs
+      behavior: domain
+
+    QuixoticHeart_proxy_domain:
+      type: http
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/proxy.mrs
+      format: mrs
+      behavior: domain
+
+    QuixoticHeart_gfw_domain:
+      type: http
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/gfw.mrs
+      format: mrs
+      behavior: domain
+
+    echs-top_tld-not-cn_domain:
+      type: http
+      url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/tld-not-cn.list
+      format: yaml
+      behavior: domain
+
+    echs-top_proxy_domain:
+      type: http
+      url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/proxy.list
+      format: yaml
+      behavior: domain
+
+    Yuu518_tld-!cn_domain:
+      type: http
+      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/tld-!cn.json
+      format: json
+      behavior: sing-box
+
+    Yuu518_gfw_domain:
+      type: http
+      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/gfw.json
+      format: json
+      behavior: sing-box
+
+    Yuu518_geolocation-!cn_domain:
+      type: http
+      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/geolocation-!cn.json
+      format: json
+      behavior: sing-box
+
+    lyc8503_gfw_domain:
+      type: http
+      url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-gfw.json
+      format: json
+      behavior: sing-box
+
+    lyc8503_tld-!cn_domain:
+      type: http
+      url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-tld-!cn.json
+      format: json
+      behavior: sing-box
+
+    lyc8503_geolocation-!cn_domain:
+      type: http
+      url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-geolocation-!cn.json
+      format: json
+      behavior: sing-box
+
+    Loyalsoldier_proxy-list_domain:
+      type: http
+      url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt
+      format: text
+      behavior: classical
+
+    Loyalsoldier_gfw_domain:
+      type: http
+      url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt
+      format: text
+      behavior: classical
 
 - path: output/gfw_domain.yaml
   format: yaml
@@ -745,21 +820,15 @@
   behavior: sing-box
   upstream: *gfw_domain_upstream
 
-# =============================================================
-# github_domain (GitHub 加速域名)
-# =============================================================
-# 功能：GitHub 镜像加速（常见于国内网络）
-# =============================================================
 
-# ============================================================
+# =============================================================
 # github_domain
-# ============================================================
+# =============================================================
 
 - path: output/github_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &github_upstream
-
+  upstream: &github_domain_upstream
     QuixoticHeart_github_domain:
       type: http
       url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/gits.mrs
@@ -799,33 +868,27 @@
 - path: output/github_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *github_upstream
+  upstream: *github_domain_upstream
 
 - path: output/github_domain.json
   format: json
   behavior: sing-box
-  upstream: *github_upstream
+  upstream: *github_domain_upstream
 
 - path: output/github_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *github_upstream
+  upstream: *github_domain_upstream
+
 
 # =============================================================
-# google_cn_domain (Google 中国镜像域名)
-# =============================================================
-# 功能：Google 中国大陆镜像加速
-# =============================================================
-
-# ============================================================
 # google_cn_domain
-# ============================================================
+# =============================================================
 
 - path: output/google_cn_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &google_cn_upstream
-
+  upstream: &google_cn_domain_upstream
     DustinWin_google-cn_domain:
       type: http
       url: https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/google-cn.srs
@@ -865,33 +928,27 @@
 - path: output/google_cn_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *google_cn_upstream
+  upstream: *google_cn_domain_upstream
 
 - path: output/google_cn_domain.json
   format: json
   behavior: sing-box
-  upstream: *google_cn_upstream
+  upstream: *google_cn_domain_upstream
 
 - path: output/google_cn_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *google_cn_upstream
+  upstream: *google_cn_domain_upstream
+
 
 # =============================================================
-# google_domain (Google 全球域名)
-# =============================================================
-# 功能：Google 全球服务（搜索、YouTube 等）
-# =============================================================
-
-# ============================================================
 # google_domain
-# ============================================================
+# =============================================================
 
 - path: output/google_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &google_upstream
-
+  upstream: &google_domain_upstream
     QuixoticHeart_google_domain:
       type: http
       url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/singbox/version5/google.srs
@@ -931,33 +988,27 @@
 - path: output/google_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *google_upstream
+  upstream: *google_domain_upstream
 
 - path: output/google_domain.json
   format: json
   behavior: sing-box
-  upstream: *google_upstream
+  upstream: *google_domain_upstream
 
 - path: output/google_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *google_upstream
+  upstream: *google_domain_upstream
+
 
 # =============================================================
-# google_fcm_domain (Google Firebase Cloud Messaging)
-# =============================================================
-# 功能：Google FCM 推送相关
-# =============================================================
-
-# ============================================================
 # google_fcm_domain
-# ============================================================
+# =============================================================
 
 - path: output/google_fcm_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &google_fcm_upstream
-
+  upstream: &google_fcm_domain_upstream
     MetaCubeX_googlefcm_domain:
       type: http
       url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/googlefcm.yaml
@@ -985,33 +1036,27 @@
 - path: output/google_fcm_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *google_fcm_upstream
+  upstream: *google_fcm_domain_upstream
 
 - path: output/google_fcm_domain.json
   format: json
   behavior: sing-box
-  upstream: *google_fcm_upstream
+  upstream: *google_fcm_domain_upstream
 
 - path: output/google_fcm_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *google_fcm_upstream
+  upstream: *google_fcm_domain_upstream
+
 
 # =============================================================
-# google_fcm_ip (Google FCM IP)
-# =============================================================
-# 功能：Google FCM IPCIDR
-# =============================================================
-
-# ============================================================
 # google_fcm_ip
-# ============================================================
+# =============================================================
 
 - path: output/google_fcm_ip.mrs
   format: mrs
   behavior: ipcidr
   upstream: &google_fcm_ip_upstream
-
     usernamelessss_googlefcm_ip:
       type: http
       url: https://github.com/usernamelessss/singbox_ruleset_use/raw/refs/heads/main/rule/GoogleFCM/GoogleFCM_IP.srs
@@ -1033,21 +1078,15 @@
   behavior: sing-box
   upstream: *google_fcm_ip_upstream
 
-# =============================================================
-# google_ip (Google IP 段)
-# =============================================================
-# 功能：Google 全球 IPCIDR
-# =============================================================
 
-# ============================================================
+# =============================================================
 # google_ip
-# ============================================================
+# =============================================================
 
 - path: output/google_ip.mrs
   format: mrs
   behavior: ipcidr
   upstream: &google_ip_upstream
-
     MetaCubeX_google_ip:
       type: http
       url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/google.yaml
@@ -1100,20 +1139,15 @@
   upstream: *google_ip_upstream
 
 # =============================================================
-# media_domain (媒体/社交媒体域名)
+# media_domain
 # =============================================================
 # 功能：YouTube / TikTok / Twitter / Instagram 等媒体社交域名
 # =============================================================
 
-# ============================================================
-# media_domain
-# ============================================================
-
 - path: output/media_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &media_upstream
-
+  upstream: &media_domain_upstream
     DustinWin_media_domain:
       type: http
       url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/media.mrs
@@ -1125,19 +1159,19 @@
       url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-media.yaml
       format: yaml
       behavior: domain
-    
-    MetaCubeX_category-media_domain:
+
+    MetaCubeX_category-social-media-!cn_domain:
       type: http
       url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-social-media-!cn.yaml
       format: yaml
-      behavior: domain  
+      behavior: domain
 
     appshubcc_media_domain:
       type: http
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/category-media.list
       format: yaml
       behavior: domain
-      
+
     appshubcc_category-social-media-!cn_domain:
       type: http
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/category-social-media-!cn.yaml
@@ -1155,7 +1189,7 @@
       url: https://github.com/SagerNet/sing-geosite/raw/refs/heads/rule-set/geosite-category-media.srs
       format: srs
       behavior: singbox
-     
+
     echs-top_media_domain:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/media.list
@@ -1189,33 +1223,27 @@
 - path: output/media_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *media_upstream
+  upstream: *media_domain_upstream
 
 - path: output/media_domain.json
   format: json
   behavior: sing-box
-  upstream: *media_upstream
+  upstream: *media_domain_upstream
 
 - path: output/media_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *media_upstream
+  upstream: *media_domain_upstream
+
 
 # =============================================================
-# media_ip (媒体 IP 段)
-# =============================================================
-# 功能：媒体服务 IPCIDR
-# =============================================================
-
-# ============================================================
 # media_ip
-# ============================================================
+# =============================================================
 
 - path: output/media_ip.mrs
   format: mrs
   behavior: ipcidr
   upstream: &media_ip_upstream
-
     DustinWin_media_ip:
       type: http
       url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/mediaip.mrs
@@ -1249,21 +1277,15 @@
   behavior: sing-box
   upstream: *media_ip_upstream
 
-# =============================================================
-# pixiv_domain (Pixiv 画图/社区域名)
-# =============================================================
-# 功能：Pixiv 相关加速
-# =============================================================
 
-# ============================================================
+# =============================================================
 # pixiv_domain
-# ============================================================
+# =============================================================
 
 - path: output/pixiv_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &pixiv_upstream
-
+  upstream: &pixiv_domain_upstream
     MetaCubeX_pixiv_domain:
       type: http
       url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/pixiv.yaml
@@ -1291,33 +1313,27 @@
 - path: output/pixiv_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *pixiv_upstream
+  upstream: *pixiv_domain_upstream
 
 - path: output/pixiv_domain.json
   format: json
   behavior: sing-box
-  upstream: *pixiv_upstream
+  upstream: *pixiv_domain_upstream
 
 - path: output/pixiv_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *pixiv_upstream
+  upstream: *pixiv_domain_upstream
+
 
 # =============================================================
-# proxy_emby_domain (Emby 代理域名)
-# =============================================================
-# 功能：Emby 远程访问代理模式
-# =============================================================
-
-# ============================================================
 # proxy_emby_domain
-# ============================================================
+# =============================================================
 
 - path: output/proxy_emby_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &proxy_emby_upstream
-
+  upstream: &proxy_emby_domain_upstream
     Harrykane-der_proxy_emby_domain:
       type: http
       url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/proxy_emby.yaml
@@ -1327,33 +1343,27 @@
 - path: output/proxy_emby_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *proxy_emby_upstream
+  upstream: *proxy_emby_domain_upstream
 
 - path: output/proxy_emby_domain.json
   format: json
   behavior: sing-box
-  upstream: *proxy_emby_upstream
+  upstream: *proxy_emby_domain_upstream
 
 - path: output/proxy_emby_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *proxy_emby_upstream
+  upstream: *proxy_emby_domain_upstream
+
 
 # =============================================================
-# telegram_domain (Telegram 域名)
-# =============================================================
-# 功能：Telegram 消息/加速域名
-# =============================================================
-
-# ============================================================
 # telegram_domain
-# ============================================================
+# =============================================================
 
 - path: output/telegram_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &telegram_upstream
-
+  upstream: &telegram_domain_upstream
     MetaCubeX_telegram_domain:
       type: http
       url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/telegram.yaml
@@ -1381,33 +1391,27 @@
 - path: output/telegram_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *telegram_upstream
+  upstream: *telegram_domain_upstream
 
 - path: output/telegram_domain.json
   format: json
   behavior: sing-box
-  upstream: *telegram_upstream
+  upstream: *telegram_domain_upstream
 
 - path: output/telegram_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *telegram_upstream
+  upstream: *telegram_domain_upstream
+
 
 # =============================================================
-# telegram_ip (Telegram IP 段)
-# =============================================================
-# 功能：Telegram 官方 IPCIDR
-# =============================================================
-
-# ============================================================
 # telegram_ip
-# ============================================================
+# =============================================================
 
 - path: output/telegram_ip.mrs
   format: mrs
   behavior: ipcidr
   upstream: &telegram_ip_upstream
-
     DustinWin_telegram_ip:
       type: http
       url: https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/telegramip.srs
@@ -1459,21 +1463,15 @@
   behavior: sing-box
   upstream: *telegram_ip_upstream
 
-# =============================================================
-# tiktok_domain (TikTok / Douyin 域名)
-# =============================================================
-# 功能：抖音 / TikTok 短视频加速
-# =============================================================
 
-# ============================================================
+# =============================================================
 # tiktok_domain
-# ============================================================
+# =============================================================
 
 - path: output/tiktok_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &tiktok_upstream
-
+  upstream: &tiktok_domain_upstream
     MetaCubeX_douyin_domain:
       type: http
       url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/douyin.yaml
@@ -1555,33 +1553,27 @@
 - path: output/tiktok_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *tiktok_upstream
+  upstream: *tiktok_domain_upstream
 
 - path: output/tiktok_domain.json
   format: json
   behavior: sing-box
-  upstream: *tiktok_upstream
+  upstream: *tiktok_domain_upstream
 
 - path: output/tiktok_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *tiktok_upstream
+  upstream: *tiktok_domain_upstream
+
 
 # =============================================================
-# tiktok_ip (TikTok / Douyin IP)
-# =============================================================
-# 功能：抖音 / TikTok IP 段
-# =============================================================
-
-# ============================================================
 # tiktok_ip
-# ============================================================
+# =============================================================
 
 - path: output/tiktok_ip.mrs
   format: mrs
   behavior: ipcidr
   upstream: &tiktok_ip_upstream
-
     appshubcc_tiktok_ip:
       type: http
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geoip/tiktok.yaml
@@ -1603,21 +1595,15 @@
   behavior: sing-box
   upstream: *tiktok_ip_upstream
 
-# =============================================================
-# twitter_domain (Twitter / X 域名)
-# =============================================================
-# 功能：Twitter / X.com 加速
-# =============================================================
 
-# ============================================================
+# =============================================================
 # twitter_domain
-# ============================================================
+# =============================================================
 
 - path: output/twitter_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &twitter_upstream
-
+  upstream: &twitter_domain_upstream
     MetaCubeX_twitter_domain:
       type: http
       url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/twitter.yaml
@@ -1645,33 +1631,27 @@
 - path: output/twitter_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *twitter_upstream
+  upstream: *twitter_domain_upstream
 
 - path: output/twitter_domain.json
   format: json
   behavior: sing-box
-  upstream: *twitter_upstream
+  upstream: *twitter_domain_upstream
 
 - path: output/twitter_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *twitter_upstream
+  upstream: *twitter_domain_upstream
+
 
 # =============================================================
-# twitter_ip (Twitter / X IP)
-# =============================================================
-# 功能：Twitter / X.com IPCIDR
-# =============================================================
-
-# ============================================================
 # twitter_ip
-# ============================================================
+# =============================================================
 
 - path: output/twitter_ip.mrs
   format: mrs
   behavior: ipcidr
   upstream: &twitter_ip_upstream
-
     MetaCubeX_twitter_ip:
       type: http
       url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/twitter.yaml
@@ -1717,21 +1697,15 @@
   behavior: sing-box
   upstream: *twitter_ip_upstream
 
-# =============================================================
-# whitelist_domain (白名单域名 - 例外直连)
-# =============================================================
-# 功能：白名单规则（与黑名单取反）
-# =============================================================
 
-# ============================================================
+# =============================================================
 # whitelist_domain
-# ============================================================
+# =============================================================
 
 - path: output/whitelist_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &whitelist_upstream
-
+  upstream: &whitelist_domain_upstream
     Harrykane-der_whitelist_domain:
       type: http
       url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/whitelist.yaml
@@ -1747,14 +1721,14 @@
 - path: output/whitelist_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *whitelist_upstream
+  upstream: *whitelist_domain_upstream
 
 - path: output/whitelist_domain.json
   format: json
   behavior: sing-box
-  upstream: *whitelist_upstream
+  upstream: *whitelist_domain_upstream
 
 - path: output/whitelist_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *whitelist_upstream
+  upstream: *whitelist_domain_upstream
