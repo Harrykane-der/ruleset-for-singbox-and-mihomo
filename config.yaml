@@ -506,6 +506,12 @@
       format: text
       behavior: ipcidr
 
+    QuixoticHeart_cn_ip:
+      type: http
+      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/ipcidr/cn.list
+      format: text
+      behavior: ipcidr
+
     SagerNet_cn_ip:
       type: http
       url: https://github.com/SagerNet/sing-geoip/raw/refs/heads/rule-set/geoip-cn.srs
