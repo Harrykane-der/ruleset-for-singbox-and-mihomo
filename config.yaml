@@ -1421,7 +1421,7 @@
       type: file
       path: local/tiktok.yaml
       format: yaml
-      behavior: domain
+      behavior: classical
     appshubcc_tiktok_domain:
       type: http
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/tiktok.yaml
