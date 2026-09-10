@@ -100,7 +100,7 @@
       type: http
       url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt
       format: text
-      behavior: classical
+      behavior: domain
 
 - path: output/adblock_domain.yaml
   format: yaml
