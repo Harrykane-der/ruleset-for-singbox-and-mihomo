@@ -675,11 +675,6 @@
       url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/gfw.list
       format: text
       behavior: domain
-    QuixoticHeart_proxy_domain:
-      type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/proxy.list
-      format: text
-      behavior: domain
     QuixoticHeart_gfw_domain:
       type: http
       url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/gfw.list
@@ -695,19 +690,9 @@
       url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-gfw.json
       format: json
       behavior: sing-box
-    Loyalsoldier_proxy-list_domain:
-      type: http
-      url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt
-      format: text
-      behavior: domain
     Loyalsoldier_gfw_domain:
       type: http
       url: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt
-      format: text
-      behavior: domain
-    Loyalsoldier_clash-proxy_domain:
-      type: http
-      url: https://github.com/Loyalsoldier/clash-rules/raw/refs/heads/release/proxy.txt
       format: text
       behavior: domain
 
