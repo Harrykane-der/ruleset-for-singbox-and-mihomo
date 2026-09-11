@@ -376,6 +376,11 @@
       url: https://github.com/Loyalsoldier/clash-rules/raw/refs/heads/release/direct.txt
       format: text
       behavior: domain
+    cresky_cn_domain:
+      type: http
+      url: https://github.com/cresky-github/geosite/raw/refs/heads/main/direct.dset
+      format: text
+      behavior: domain
 
 - path: output/cn_domain.yaml
   format: yaml
@@ -660,24 +665,14 @@
       url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/proxy.list
       format: text
       behavior: domain
+    cresky_proxy_domain:
+      type: http
+      url: https://github.com/cresky-github/geosite/raw/refs/heads/main/proxy.dset
+      format: text
+      behavior: domain
     DustinWin_gfw_domain:
       type: http
       url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/gfw.list
-      format: text
-      behavior: domain
-    MetaCubeX_tld-!cn_domain:
-      type: http
-      url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tld-!cn.yaml
-      format: yaml
-      behavior: domain
-    QuixoticHeart_tld-proxy_domain:
-      type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/tld-proxy.list
-      format: text
-      behavior: domain
-    QuixoticHeart_iplocation-proxy_domain:
-      type: http
-      url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/iplocation-proxy.list
       format: text
       behavior: domain
     QuixoticHeart_proxy_domain:
@@ -690,44 +685,19 @@
       url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/gfw.list
       format: text
       behavior: domain
-    echs-top_tld-not-cn_domain:
-      type: http
-      url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/tld-not-cn.list
-      format: text
-      behavior: domain
     echs-top_proxy_domain:
       type: http
       url: https://github.com/echs-top/proxy/raw/refs/heads/main/list/domain/proxy.list
       format: text
       behavior: domain
-    Yuu518_tld-!cn_domain:
-      type: http
-      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/tld-!cn.json
-      format: json
-      behavior: sing-box
     Yuu518_gfw_domain:
       type: http
       url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/gfw.json
       format: json
       behavior: sing-box
-    Yuu518_geolocation-!cn_domain:
-      type: http
-      url: https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_site/geolocation-!cn.json
-      format: json
-      behavior: sing-box
     lyc8503_gfw_domain:
       type: http
       url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-gfw.json
-      format: json
-      behavior: sing-box
-    lyc8503_tld-!cn_domain:
-      type: http
-      url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-tld-!cn.json
-      format: json
-      behavior: sing-box
-    lyc8503_geolocation-!cn_domain:
-      type: http
-      url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-geolocation-!cn.json
       format: json
       behavior: sing-box
     Loyalsoldier_proxy-list_domain:
