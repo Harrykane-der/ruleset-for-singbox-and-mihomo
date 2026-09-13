@@ -1530,7 +1530,7 @@
   upstream: &whitelist_domain_upstream
     Harrykane-der_whitelist_domain:
       type: http
-      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/whitelist.yaml
+      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/whitelist.json
       format: json
       behavior: sing-box
     ACL4SSR_UNBAN_domain:
