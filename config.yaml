@@ -1531,8 +1531,8 @@
     Harrykane-der_whitelist_domain:
       type: http
       url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/whitelist.yaml
-      format: yaml
-      behavior: domain
+      format: json
+      behavior: sing-box
     ACL4SSR_UNBAN_domain:
       type: http
       url: https://github.com/ACL4SSR/ACL4SSR/raw/refs/heads/master/Clash/UnBan.list
