@@ -665,11 +665,6 @@
       url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/proxy.list
       format: text
       behavior: domain
-    cresky_proxy_domain:
-      type: http
-      url: https://github.com/cresky-github/geosite/raw/refs/heads/main/proxy.dset
-      format: text
-      behavior: domain
     DustinWin_gfw_domain:
       type: http
       url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/gfw.list
