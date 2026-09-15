@@ -17,9 +17,9 @@
   format: mrs
   behavior: domain
   upstream: &ablock_domain_upstream
-    Harrykane-der_ablock_domain:
+    Harrykane-der_port_domain:
       type: http
-      url: https://raw.githubusercontent.com/Harrykane-der/my-rules/refs/heads/main/ablock.json
+      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/port.json
       format: json
       behavior: sing-box
 
@@ -46,6 +46,11 @@
   format: mrs
   behavior: domain
   upstream: &adblock_domain_upstream
+     Harrykane-der_ablock_domain:
+      type: http
+      url: https://raw.githubusercontent.com/Harrykane-der/my-rules/refs/heads/main/ablock.json
+      format: json
+      behavior: sing-box
     xndeye_adblock-list_domain:
       type: http
       url: https://github.com/xndeye/adblock_list/raw/refs/heads/release/clash.yaml
