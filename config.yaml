@@ -46,7 +46,7 @@
   format: mrs
   behavior: domain
   upstream: &adblock_domain_upstream
-     Harrykane-der_ablock_domain:
+    Harrykane-der_ablock_domain:
       type: http
       url: https://raw.githubusercontent.com/Harrykane-der/my-rules/refs/heads/main/ablock.json
       format: json
