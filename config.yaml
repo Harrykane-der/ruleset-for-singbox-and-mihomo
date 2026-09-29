@@ -568,7 +568,7 @@
 # fakeip_filter__cn_domain (FakeIP 过滤域名)
 # 功能：FakeIP 模式下需要排除（不走 FakeIP）的域名
 # =============================================================
-- path: output/fakeip_filter__cn_domain.mrs
+- path: output/fakeip_filter_!cn_domain.mrs
   format: mrs
   behavior: domain
   upstream: &fakeip_filter__cn_domain_upstream
