@@ -49,7 +49,6 @@ CLASSICAL_TO_SB = {
 class RulesMerger:
     def __init__(self, config_path: str, max_workers: int = 64):
         raw_config = self._load_config(config_path)
-        # 兼容顶层为列表或包含 rulesets/push/output_dir 的字典
         if isinstance(raw_config, list):
             self.rulesets = raw_config
             self.push_config = {}
@@ -57,7 +56,6 @@ class RulesMerger:
         elif isinstance(raw_config, dict):
             self.rulesets = raw_config.get('rulesets', [])
             self.push_config = raw_config.get('push', {})
-            # 优先从 config.yaml 读取 output_dir，无则默认 "output"
             self.output_dir = raw_config.get('output_dir', 'output')
         else:
             self.rulesets = []
@@ -75,7 +73,6 @@ class RulesMerger:
             status_forcelist=[500, 502, 503, 504],
             allowed_methods=frozenset(['GET', 'HEAD']),
         )
-        # 连接池按并发数放大，避免 "Connection pool is full" 警告
         pool_size = max(32, self.max_workers * 4)
         adapter = HTTPAdapter(
             max_retries=retries,
@@ -102,7 +99,6 @@ class RulesMerger:
             ('sing-box', 'ipcidr'): self._sing_box_to_ipcidr
         }
 
-        # 推送设置
         self.push_enabled = self.push_config.get('enabled', True)
         self.push_remote = self.push_config.get('remote', 'origin')
         self.push_branch = self.push_config.get('branch', None)
@@ -147,7 +143,6 @@ class RulesMerger:
 
     @staticmethod
     def _clean_json_text(text: str) -> str:
-        """移除 UTF-8 BOM 头、单行 // 注释和多行 /* */ 注释"""
         if not text:
             return ""
         text = text.lstrip('\ufeff')
@@ -443,7 +438,6 @@ class RulesMerger:
     def _parse_sing_box_source_to_list(self, content: str) -> List[Any]:
         if not content or not content.strip():
             return []
-        
         cleaned_text = self._clean_json_text(content)
         try:
             data = json.loads(cleaned_text)
@@ -514,7 +508,6 @@ class RulesMerger:
         return f"DOMAIN,{rule}" if DOMAIN_PATTERN.match(rule) else None
 
     def _classical_to_sing_box(self, rule: str) -> Optional[str]:
-        item = None
         if not self._validate_classical_rule(rule):
             return None
         parts = [p.strip() for p in rule.split(',')]
@@ -544,7 +537,6 @@ class RulesMerger:
         return None
 
     def _domain_to_sing_box(self, rule: str) -> Optional[str]:
-        item = None
         if not self._validate_domain_rule(rule):
             return None
         item = self._to_sing_box_item(rule, 'domain')
@@ -553,7 +545,6 @@ class RulesMerger:
         return None
 
     def _ipcidr_to_sing_box(self, rule: str) -> Optional[str]:
-        item = None
         if not self._validate_ipcidr_rule(rule):
             return None
         item = self._to_sing_box_item(rule, 'ipcidr')
@@ -701,8 +692,51 @@ class RulesMerger:
         if self.push_enabled:
             self._force_push()
 
+    def _process_one_source(self, src: Dict, target_behavior: str, path: str) -> Tuple[List[Any], int, int]:
+        """单个源的完整流水线：抓取 + 转换。完全独立，互不阻塞。
+        返回: (转换后的规则列表, 原始条数, 丢弃条数)
+        """
+        label = src.get('url') or src.get('path') or 'unknown'
+        try:
+            raw_rules, src_behavior, _ = self._fetch_source(src)
+        except Exception as e:
+            logger.error(f"[{path}] 源 {label} 抓取失败: {e}")
+            return [], 0, 0
+
+        total_raw = len(raw_rules)
+        dropped = 0
+        converted: List[Any] = []
+
+        for rule in raw_rules:
+            if not rule:
+                continue
+            if isinstance(rule, str):
+                rule = self._clean_rule(rule)
+                if not rule or rule in ('*', '+.*', '.*', '+.', '.'):
+                    dropped += 1
+                    continue
+                if rule.startswith('*.'):
+                    rule = '+.' + rule[2:]
+                elif rule.startswith('.'):
+                    rule = '+.' + rule[1:]
+
+            transformed = self._transform(rule, src_behavior, target_behavior)
+            if transformed:
+                converted.extend(transformed)
+            else:
+                dropped += 1
+
+        logger.info(
+            f"[{path}] 源 {label} 处理完成: 原始 {total_raw} 条 -> 有效 {len(converted)} 条, 丢弃 {dropped} 条"
+        )
+        return converted, total_raw, dropped
+
     def _process_one_ruleset(self, cfg: Dict) -> None:
-        """单个规则集的完整独立流程：抓源 -> 转换 -> 去重 -> 写盘。"""
+        """单个规则集的独立流程：
+        1) 每个源作为独立流水线单元并发执行（抓取 + 转换）
+        2) 所有源完成后聚合去重
+        3) 写盘
+        """
         path = cfg['path']
         target_format = cfg.get('format', 'yaml')
         target_behavior = self._normalize_behavior(
@@ -712,53 +746,31 @@ class RulesMerger:
         sources = list(cfg['upstream'].values())
 
         try:
-            # ---- 1. 本规则集独立并行抓取所有源（不与其他规则集共享缓存）----
-            fetched: List[Tuple[List[Any], str, str]] = []
+            # ---- 阶段 1：每个源作为独立流水线单元并发处理（抓取 + 转换一体）----
+            all_converted: List[Any] = []
+            total_raw, total_dropped = 0, 0
+
             if sources:
                 inner_workers = max(1, min(self.max_workers, len(sources)))
                 with ThreadPoolExecutor(max_workers=inner_workers) as executor:
-                    future_to_src = {
-                        executor.submit(self._fetch_source, src): src
+                    futures = [
+                        executor.submit(self._process_one_source, src, target_behavior, path)
                         for src in sources
-                    }
-                    for future in as_completed(future_to_src):
-                        src = future_to_src[future]
-                        label = src.get('url') or src.get('path') or 'unknown'
+                    ]
+                    for future in as_completed(futures):
                         try:
-                            fetched.append(future.result())
+                            converted, raw_cnt, dropped_cnt = future.result()
+                            all_converted.extend(converted)
+                            total_raw += raw_cnt
+                            total_dropped += dropped_cnt
                         except Exception as e:
-                            logger.error(f"[{path}] 获取源失败 {label}: {e}")
-
-            # ---- 2. 转换 ----
-            all_converted: List[Any] = []
-            total_raw, dropped_count = 0, 0
-
-            for raw_rules, src_behavior, label in fetched:
-                total_raw += len(raw_rules)
-                for rule in raw_rules:
-                    if not rule:
-                        continue
-                    if isinstance(rule, str):
-                        rule = self._clean_rule(rule)
-                        if not rule or rule in ('*', '+.*', '.*', '+.', '.'):
-                            dropped_count += 1
-                            continue
-                        if rule.startswith('*.'):
-                            rule = '+.' + rule[2:]
-                        elif rule.startswith('.'):
-                            rule = '+.' + rule[1:]
-
-                    transformed = self._transform(rule, src_behavior, target_behavior)
-                    if transformed:
-                        all_converted.extend(transformed)
-                    else:
-                        dropped_count += 1
+                            logger.error(f"[{path}] 源流水线单元异常: {e}")
 
             logger.info(
-                f"[{path}] 转换完成: 原始 {total_raw} 条 -> 有效 {len(all_converted)} 条, 丢弃 {dropped_count} 条"
+                f"[{path}] 全部源处理完成: 原始 {total_raw} 条 -> 有效 {len(all_converted)} 条, 丢弃 {total_dropped} 条"
             )
 
-            # ---- 3. 聚合去重 ----
+            # ---- 阶段 2：聚合去重 ----
             if target_behavior == 'sing-box':
                 dict_rules = []
                 for r in all_converted:
@@ -775,8 +787,7 @@ class RulesMerger:
 
             logger.info(f"[{path}] 聚合去重完成，最终规则数={len(final_rules)}，正在写入...")
 
-            # ---- 4. 写盘 ----
-            # 若 path 本身包含目录前缀或为绝对路径，直接使用；否则拼接到 output_dir
+            # ---- 阶段 3：写盘 ----
             if os.path.isabs(path) or os.path.dirname(path):
                 full_output_path = path
             else:
@@ -974,7 +985,7 @@ class RulesMerger:
                         cleaned.append(f"+.{dom}" if prefix == 'DOMAIN-SUFFIX' else dom)
                 else:
                     cleaned.append(s)
-            else:  # classical
+            else:
                 cleaned.append(s)
 
         return list(dict.fromkeys(cleaned))
@@ -1017,7 +1028,7 @@ class RulesMerger:
             elif rule_format == 'yaml':
                 with open(output_path, 'w', encoding='utf-8') as f:
                     yaml.dump({'payload': rules}, f, allow_unicode=True, sort_keys=False)
-            else:  # text / classical / domain / ipcidr
+            else:
                 with open(output_path, 'w', encoding='utf-8') as f:
                     f.write(f"# Update: {datetime.now():%Y-%m-%d %H:%M:%S} | Total: {len(rules)}\n")
                     f.write('\n'.join(str(r) for r in rules) + '\n')
@@ -1065,14 +1076,11 @@ class RulesMerger:
 
     # -------------------- Git 强制推送 --------------------
     def _force_push(self) -> None:
-        """将输出目录强制推送到远程仓库"""
         if not shutil.which('git'):
             logger.error("未找到 git 命令，跳过推送")
             return
         try:
-            # 添加输出目录
             subprocess.run(['git', 'add', self.output_dir], check=True, capture_output=True, text=True)
-            # 检查是否有变更
             status = subprocess.run(
                 ['git', 'status', '--porcelain', self.output_dir],
                 capture_output=True, text=True, check=True
@@ -1080,10 +1088,8 @@ class RulesMerger:
             if not status.stdout.strip():
                 logger.info("规则文件无变更，跳过推送")
                 return
-            # 提交
             commit_msg = f"Update rules {datetime.now():%Y-%m-%d %H:%M:%S}"
             subprocess.run(['git', 'commit', '-m', commit_msg], check=True, capture_output=True, text=True)
-            # 强制推送
             push_cmd = ['git', 'push', '--force', self.push_remote]
             if self.push_branch:
                 push_cmd.append(self.push_branch)
