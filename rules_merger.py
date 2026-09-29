@@ -47,7 +47,7 @@ CLASSICAL_TO_SB = {
 }
 
 class RulesMerger:
-    def __init__(self, config_path: str, max_workers: int = 10):
+    def __init__(self, config_path: str, max_workers: int = 64):
         raw_config = self._load_config(config_path)
         # 兼容顶层为列表或包含 rulesets/push/output_dir 的字典
         if isinstance(raw_config, list):
@@ -69,9 +69,23 @@ class RulesMerger:
         self.max_workers = max_workers
 
         self.session = requests.Session()
-        retries = Retry(total=5, backoff_factor=1, status_forcelist=[500, 502, 503, 504])
-        self.session.mount('http://', HTTPAdapter(max_retries=retries))
-        self.session.mount('https://', HTTPAdapter(max_retries=retries))
+        retries = Retry(
+            total=5,
+            backoff_factor=1,
+            status_forcelist=[500, 502, 503, 504],
+            allowed_methods=frozenset(['GET', 'HEAD']),
+        )
+        # 连接池按并发数放大，避免 "Connection pool is full" 警告
+        pool_size = max(32, self.max_workers * 4)
+        adapter = HTTPAdapter(
+            max_retries=retries,
+            pool_connections=pool_size,
+            pool_maxsize=pool_size,
+            pool_block=False,
+        )
+        self.session.mount('http://', adapter)
+        self.session.mount('https://', adapter)
+        logger.info(f"HTTP 连接池大小: {pool_size} (max_workers={self.max_workers})")
 
         os.makedirs(self.output_dir, exist_ok=True)
 
@@ -1081,7 +1095,7 @@ class RulesMerger:
             logger.error(f"推送过程异常: {e}")
 
 def main():
-    merger = RulesMerger('config.yaml', max_workers=1000)
+    merger = RulesMerger('config.yaml', max_workers=64)
     merger.merge_rules()
 
 if __name__ == '__main__':
