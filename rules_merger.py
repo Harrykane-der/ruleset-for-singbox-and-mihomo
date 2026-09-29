@@ -661,6 +661,7 @@ class RulesMerger:
 
     # -------------------- 调度流程 --------------------
     def merge_rules(self) -> None:
+        """所有规则集各自独立并行处理，互不阻塞、互不影响。"""
         configs = [
             cfg for cfg in self.rulesets
             if isinstance(cfg, dict) and 'upstream' in cfg and cfg.get('path')
@@ -669,37 +670,11 @@ class RulesMerger:
             logger.warning("没有有效的规则集配置")
             return
 
-        unique_sources: Dict[Tuple, Dict] = {}
-        for cfg in configs:
-            for src in cfg['upstream'].values():
-                key = (
-                    src.get('url') or src.get('path'),
-                    src.get('format', 'yaml'),
-                    self._normalize_behavior(src.get('behavior'))
-                )
-                if key[0] and key not in unique_sources:
-                    unique_sources[key] = src
+        logger.info(f"共 {len(configs)} 个规则集，开始各自独立并行处理...")
 
-        logger.info(f"共 {len(configs)} 个规则集, {len(unique_sources)} 个唯一源，开始并行获取数据源...")
-
-        source_cache: Dict[Tuple, Tuple[List[Any], str, str]] = {}
-        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            future_to_key = {
-                executor.submit(self._fetch_source, src): key
-                for key, src in unique_sources.items()
-            }
-            for future in as_completed(future_to_key):
-                key = future_to_key[future]
-                try:
-                    source_cache[key] = future.result()
-                except Exception as e:
-                    logger.error(f"获取源失败 {key}: {e}")
-                    source_cache[key] = ([], 'classical', str(key[0]))
-
-        logger.info("所有数据源获取完成，开始处理规则集...")
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             futures = [
-                executor.submit(self._process_one_ruleset, cfg, source_cache)
+                executor.submit(self._process_one_ruleset, cfg)
                 for cfg in configs
             ]
             for future in as_completed(futures):
@@ -712,28 +687,40 @@ class RulesMerger:
         if self.push_enabled:
             self._force_push()
 
-    def _process_one_ruleset(self, cfg: Dict, source_cache: Dict) -> None:
+    def _process_one_ruleset(self, cfg: Dict) -> None:
+        """单个规则集的完整独立流程：抓源 -> 转换 -> 去重 -> 写盘。"""
         path = cfg['path']
         target_format = cfg.get('format', 'yaml')
         target_behavior = self._normalize_behavior(
             cfg.get('behavior', 'sing-box' if target_format in ('json', 'srs') else 'classical')
         )
         version = cfg.get('version', SING_BOX_RULESET_VERSION)
-        sources = cfg['upstream'].values()
+        sources = list(cfg['upstream'].values())
 
         try:
-            all_converted = []
+            # ---- 1. 本规则集独立并行抓取所有源（不与其他规则集共享缓存）----
+            fetched: List[Tuple[List[Any], str, str]] = []
+            if sources:
+                inner_workers = max(1, min(self.max_workers, len(sources)))
+                with ThreadPoolExecutor(max_workers=inner_workers) as executor:
+                    future_to_src = {
+                        executor.submit(self._fetch_source, src): src
+                        for src in sources
+                    }
+                    for future in as_completed(future_to_src):
+                        src = future_to_src[future]
+                        label = src.get('url') or src.get('path') or 'unknown'
+                        try:
+                            fetched.append(future.result())
+                        except Exception as e:
+                            logger.error(f"[{path}] 获取源失败 {label}: {e}")
+
+            # ---- 2. 转换 ----
+            all_converted: List[Any] = []
             total_raw, dropped_count = 0, 0
 
-            for src in sources:
-                key = (
-                    src.get('url') or src.get('path'),
-                    src.get('format', 'yaml'),
-                    self._normalize_behavior(src.get('behavior'))
-                )
-                raw_rules, src_behavior, label = source_cache.get(key, ([], 'classical', ''))
+            for raw_rules, src_behavior, label in fetched:
                 total_raw += len(raw_rules)
-
                 for rule in raw_rules:
                     if not rule:
                         continue
@@ -753,8 +740,11 @@ class RulesMerger:
                     else:
                         dropped_count += 1
 
-            logger.info(f"[{path}] 转换完成: 原始 {total_raw} 条 -> 有效 {len(all_converted)} 条, 丢弃 {dropped_count} 条")
+            logger.info(
+                f"[{path}] 转换完成: 原始 {total_raw} 条 -> 有效 {len(all_converted)} 条, 丢弃 {dropped_count} 条"
+            )
 
+            # ---- 3. 聚合去重 ----
             if target_behavior == 'sing-box':
                 dict_rules = []
                 for r in all_converted:
@@ -771,7 +761,8 @@ class RulesMerger:
 
             logger.info(f"[{path}] 聚合去重完成，最终规则数={len(final_rules)}，正在写入...")
 
-            # 适应 output/ 路径变动：若 path 本身包含目录前缀，直接使用 path；否则拼接到 output_dir
+            # ---- 4. 写盘 ----
+            # 若 path 本身包含目录前缀或为绝对路径，直接使用；否则拼接到 output_dir
             if os.path.isabs(path) or os.path.dirname(path):
                 full_output_path = path
             else:
@@ -975,7 +966,7 @@ class RulesMerger:
         return list(dict.fromkeys(cleaned))
 
     def _write_rules(self, output_path: str, rules: List[Any], rule_format: str, behavior: str, version: int) -> None:
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        os.makedirs(os.path.dirname(output_path) or '.', exist_ok=True)
 
         try:
             if rule_format == 'mrs':
@@ -1090,7 +1081,7 @@ class RulesMerger:
             logger.error(f"推送过程异常: {e}")
 
 def main():
-    merger = RulesMerger('config.yaml', max_workers=10)
+    merger = RulesMerger('config.yaml', max_workers=1000)
     merger.merge_rules()
 
 if __name__ == '__main__':
