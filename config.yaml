@@ -565,24 +565,24 @@
   upstream: *direct_emby_domain_upstream
 
 # =============================================================
-# fakeipfilter-!cn_domain (FakeIP 过滤域名)
+# fakeip_filter_!cn_domain (FakeIP 过滤域名)
 # 功能：FakeIP 模式下需要排除（不走 FakeIP）的域名
 # =============================================================
-- path: output/fakeipfilter-!cn_domain.mrs
+- path: output/fakeip_filter_!cn_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &fakeipfilter-!cn_domain_upstream
-    DustinWin_fakeipfilter-!cn_domain:
+  upstream: &fakeip_filter_!cn_domain_upstream
+    DustinWin_fakeip_filter_!cn_domain:
       type: http
       url: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/fakeip-filter.list
       format: text
       behavior: domain
-    QuixoticHeart_fakeipfilter-!cn_domain:
+    QuixoticHeart_fakeip_filter_!cn_domain:
       type: http
       url: https://github.com/QuixoticHeart/rule-set/raw/refs/heads/ruleset/meta/domain/fake-ip-filter.list
       format: text
       behavior: domain
-    wwqgtxx_fakeipfilter-!cn_domain:
+    wwqgtxx_fakeip_filter_!cn_domain:
       type: http
       url: https://raw.githubusercontent.com/wwqgtxx/clash-rules/release/fakeip-filter.mrs
       format: mrs
@@ -592,65 +592,65 @@
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo-lite/geosite/fakeip-filter.yaml
       format: yaml
       behavior: domain
-    appshubcc_fakeipfilter-!cn_domain:
+    appshubcc_fakeip_filter_!cn_domain:
       type: http
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/fakeip-filter.yaml
       format: yaml
       behavior: domain
-    Harrykane-der_fakeipfilter-!cn_domain:
+    Harrykane-der_fakeip_filter_!cn_domain:
       type: http
       url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/fakeip-filter.yaml
       format: yaml
       behavior: domain
-    qichiyuhub_fakeipfilter-!cn_domain:
+    qichiyuhub_fakeip_filter_!cn_domain:
       type: http
       url: https://github.com/qichiyuhub/rule/raw/refs/heads/main/rules/fakeipfilter-!cn.json
       format: json
       behavior: sing-box
 
-- path: output/fakeipfilter-!cn_domain.yaml
+- path: output/fakeip_filter_!cn_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *fakeipfilter-!cn_domain_upstream
+  upstream: *fakeip_filter_!cn_domain_upstream
 
-- path: output/fakeipfilter-!cn_domain.json
+- path: output/fakeip_filter_!cn_domain.json
   format: json
   behavior: sing-box
-  upstream: *fakeipfilter-!cn_domain_upstream
+  upstream: *fakeip_filter_!cn_domain_upstream
 
-- path: output/fakeipfilter-!cn_domain.srs
+- path: output/fakeip_filter_!cn_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *fakeipfilter-!cn_domain_upstream
+  upstream: *fakeip_filter_!cn_domain_upstream
 
 # =============================================================
-# fakeipfilter-cn_domain (FakeIP 过滤域名)
+# fakeip_filter_cn_domain (FakeIP 过滤域名)
 # 功能：FakeIP 模式下需要排除（不走 FakeIP）的域名
 # =============================================================
-- path: output/fakeipfilter-cn_domain.mrs
+- path: output/fakeip_filter_cn_domain.mrs
   format: mrs
   behavior: domain
-  upstream: &fakeipfilter-cn_domain_upstream
-    qichiyuhub_fakeipfilter-cn_domain:
+  upstream: &fakeip_filter_cn_domain_upstream
+    qichiyuhub_fakeip_filter_cn_domain:
       type: http
-      url: https://github.com/qichiyuhub/rule/raw/refs/heads/main/rules/fakeipfilter-!cn.json
+      url: https://github.com/qichiyuhub/rule/raw/refs/heads/main/rules/fakeipfilter-cn.json
       format: json
       behavior: sing-box
 
-- path: output/fakeipfilter-cn_domain.yaml
+- path: output/fakeip_filter_cn_domain.yaml
   format: yaml
   behavior: domain
-  upstream: *fakeipfilter-cn_domain_upstream
+  upstream: *fakeip_filter_cn_domain_upstream
 
-- path: output/fakeipfilter-cn_domain.json
+- path: output/fakeip_filter_cn_domain.json
   format: json
   behavior: sing-box
-  upstream: *fakeipfilter-cn_domain_upstream
+  upstream: *fakeip_filter_cn_domain_upstream
 
-- path: output/fakeipfilter-cn_domain.srs
+- path: output/fakeip_filter_cn_domain.srs
   format: srs
   behavior: sing-box
-  upstream: *fakeipfilter-cn_domain_upstream
+  upstream: *fakeip_filter_cn_domain_upstream
 
 # =============================================================
 # game_domain (游戏相关域名)
