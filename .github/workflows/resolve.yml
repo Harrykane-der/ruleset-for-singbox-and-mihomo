@@ -46,7 +46,7 @@ jobs:
       - name: Clean up
         run: |
           find . -maxdepth 1 ! -name 'output' ! -name '.' ! -name '.git' -exec rm -rf {} +
-          mv output/* .
+          cp -a output/. .
           rm -rf output
 
       - name: Get current time
