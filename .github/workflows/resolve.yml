@@ -2,7 +2,7 @@ name: rules merger
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */4 * * *'
   workflow_dispatch:
 
 
@@ -65,3 +65,9 @@ jobs:
           skip_fetch: true
           skip_checkout: true
           commit_options: '--allow-empty'
+
+      - name: Clean up
+        run: |
+          find . -maxdepth 1 ! -name 'output' ! -name '.' ! -name '.git' -exec rm -rf {} +
+          mv output/* .
+          rm -rf output
