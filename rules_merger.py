@@ -8,6 +8,7 @@ import logging
 import re
 import ipaddress
 import shutil
+import threading
 from datetime import datetime
 from functools import lru_cache
 from typing import List, Dict, Optional, Any, Tuple, Union
@@ -27,6 +28,10 @@ DOMAIN_PATTERN = re.compile(
     r"(?:\.(?:\*|[a-zA-Z0-9*](?:[a-zA-Z0-9*-]*[a-zA-Z0-9*])?))*$"
 )
 PORT_PATTERN = re.compile(r"^\d+(?:-\d+)?$")
+JSON_COMMENT_PATTERN = re.compile(
+    r'//.*?$|/\*.*?\*/|"(?:\\.|[^\\"])*"',
+    re.DOTALL | re.MULTILINE
+)
 
 MIHOMO_PATH = "mihomo"
 SING_BOX_PATH = "sing-box"
@@ -65,26 +70,25 @@ class RulesMerger:
 
         self.mihomo_path = MIHOMO_PATH
         self.sing_box_path = SING_BOX_PATH
-        self.max_workers = max_workers
+        self.max_workers = max(1, int(max_workers))
 
-        self.session = requests.Session()
-        retries = Retry(
+        # 外层规则集线程和所有内层源线程共享总线程预算。
+        # 每个规则集拥有独立的源线程池，因此按最坏情况计算总线程数。
+        self.ruleset_workers = 1
+        self.source_workers = max(1, self.max_workers - 1)
+
+        # requests.Session 不保证跨线程共享安全；每个工作线程复用自己的 Session。
+        self._session_local = threading.local()
+        self._http_retries = Retry(
             total=5,
+            connect=5,
+            read=5,
+            status=5,
             backoff_factor=1,
             status_forcelist=[500, 502, 503, 504],
-            allowed_methods=frozenset(["GET", "HEAD"])
+            allowed_methods=frozenset(["GET", "HEAD"]),
+            respect_retry_after_header=True
         )
-        pool_size = max(32, self.max_workers * 4)
-        adapter = HTTPAdapter(
-            max_retries=retries,
-            pool_connections=pool_size,
-            pool_maxsize=pool_size,
-            pool_block=False
-        )
-        self.session.mount("http://", adapter)
-        self.session.mount("https://", adapter)
-        logger.info("HTTP 连接池大小: %s (max_workers=%s)", pool_size, self.max_workers)
-
         os.makedirs(self.output_dir, exist_ok=True)
 
         self._transformers = {
@@ -110,6 +114,22 @@ class RulesMerger:
             return "classical"
         value = behavior.strip().lower()
         return "sing-box" if value in ("singbox", "sing-box") else value
+
+    def _get_session(self) -> requests.Session:
+        """获取当前线程专用的 HTTP Session，并在该线程内复用连接。"""
+        session = getattr(self._session_local, "session", None)
+        if session is None:
+            session = requests.Session()
+            adapter = HTTPAdapter(
+                max_retries=self._http_retries,
+                pool_connections=4,
+                pool_maxsize=1,
+                pool_block=False
+            )
+            session.mount("http://", adapter)
+            session.mount("https://", adapter)
+            self._session_local.session = session
+        return session
 
     @staticmethod
     def _load_config(path: str) -> Any:
@@ -147,16 +167,11 @@ class RulesMerger:
         if not text:
             return ""
         text = text.lstrip("\ufeff")
-        pattern = re.compile(
-            r'//.*?$|/\*.*?\*/|"(?:\\.|[^\\"])*"',
-            re.DOTALL | re.MULTILINE
-        )
-
         def replace(match):
             value = match.group(0)
             return "" if value.startswith("/") else value
 
-        return pattern.sub(replace, text)
+        return JSON_COMMENT_PATTERN.sub(replace, text)
 
     @staticmethod
     @lru_cache(maxsize=65536)
@@ -243,7 +258,7 @@ class RulesMerger:
             return None
 
         domain = domain.rstrip(".").lower()
-        if not domain or self._parse_ip_network(domain):
+        if not domain:
             return None
         try:
             ipaddress.ip_address(domain)
@@ -380,35 +395,51 @@ class RulesMerger:
                 exact.append(domain)
         return exact, suffix
 
+    @staticmethod
+    def _prune_networks(networks):
+        """删除被已保留父网段覆盖的子网，不合并相邻网段。"""
+        if not networks:
+            return []
+
+        networks = sorted(
+            set(networks),
+            key=lambda n: (n.version, n.prefixlen, int(n.network_address))
+        )
+        kept = []
+        kept_set = set()
+
+        for network in networks:
+            covered = False
+            # 父网段的前缀长度一定小于当前网段；只需检查至多 32/128 个祖先。
+            for prefix in range(network.prefixlen):
+                parent = network.supernet(new_prefix=prefix)
+                if parent in kept_set:
+                    covered = True
+                    break
+            if not covered:
+                kept.append(network)
+                kept_set.add(network)
+
+        return kept
+
     def _merge_ip_rules(self, rules: List[str]) -> List[str]:
-        ipv4_networks, ipv6_networks, other = [], [], []
-        seen = set()
+        ipv4_networks, ipv6_networks = [], []
+        other, seen_other = [], set()
         for rule in rules:
             value = rule.strip()
             if not value:
                 continue
-            signature = self._normalize_rule_signature(value)
-            if signature in seen:
-                continue
-            seen.add(signature)
             network = self._parse_ip_network(value)
             if network:
                 (ipv4_networks if network.version == 4 else ipv6_networks).append(network)
-            else:
+                continue
+            signature = self._normalize_rule_signature(value)
+            if signature not in seen_other:
+                seen_other.add(signature)
                 other.append(value)
 
-        def prune(networks):
-            if not networks:
-                return []
-            networks.sort(key=lambda item: (item.prefixlen, int(item.network_address)))
-            kept = []
-            for network in networks:
-                if not any(network.subnet_of(parent) for parent in kept):
-                    kept.append(network)
-            return kept
-
-        result = [f"IP-CIDR,{n.with_prefixlen}" for n in prune(ipv4_networks)]
-        result.extend(f"IP-CIDR6,{n.with_prefixlen}" for n in prune(ipv6_networks))
+        result = [f"IP-CIDR,{n.with_prefixlen}" for n in self._prune_networks(ipv4_networks)]
+        result.extend(f"IP-CIDR6,{n.with_prefixlen}" for n in self._prune_networks(ipv6_networks))
         result.extend(other)
         return result
 
@@ -425,9 +456,9 @@ class RulesMerger:
             if source_type == "http":
                 url = source.get("url", "")
                 logger.info("下载源: %s", url)
-                response = self.session.get(url, timeout=15)
-                response.raise_for_status()
-                content = response.content
+                with self._get_session().get(url, timeout=(5, 15)) as response:
+                    response.raise_for_status()
+                    content = response.content
             elif source_type == "file":
                 path = source.get("path", "")
                 logger.info("读取本地源: %s", path)
@@ -553,14 +584,14 @@ class RulesMerger:
         return f"DOMAIN,{normalized}"
 
     def _classical_to_sing_box(self, rule: str) -> Optional[str]:
-        if not self._validate_classical_rule(rule):
-            return None
         parts = [part.strip() for part in rule.split(",")]
         if not parts or not parts[0]:
             return None
         prefix = parts[0].upper()
 
         if prefix == "DST-PORT" and len(parts) >= 2:
+            if not self._validate_classical_rule(rule):
+                return None
             items = [item.strip() for item in parts[1].split("/") if item.strip()]
             ports, ranges = [], []
             for item in self._merge_port_items(items):
@@ -581,14 +612,10 @@ class RulesMerger:
         return None
 
     def _domain_to_sing_box(self, rule: str) -> Optional[str]:
-        if not self._validate_domain_rule(rule):
-            return None
         item = self._to_sing_box_item(rule, "domain")
         return json.dumps({item[0]: [item[1]]}) if item else None
 
     def _ipcidr_to_sing_box(self, rule: str) -> Optional[str]:
-        if not self._validate_ipcidr_rule(rule):
-            return None
         item = self._to_sing_box_item(rule, "ipcidr")
         return json.dumps({item[0]: [item[1]]}) if item else None
 
@@ -756,20 +783,16 @@ class RulesMerger:
         return result
 
     def _deduplicate_and_merge_ipcidr(self, rules: List[Any]) -> List[str]:
-        normalized = []
+        ipv4, ipv6 = [], []
         for raw in rules:
             if not isinstance(raw, str):
                 continue
             network = self._parse_ip_network(raw)
             if network:
-                normalized.append(network.with_prefixlen)
-        merged = self._merge_ip_rules(normalized)
-        result = []
-        for item in merged:
-            network = self._parse_ip_network(item)
-            if network:
-                result.append(network.with_prefixlen)
-        return result
+                (ipv4 if network.version == 4 else ipv6).append(network)
+        return [n.with_prefixlen for n in self._prune_networks(ipv4)] + [
+            n.with_prefixlen for n in self._prune_networks(ipv6)
+        ]
 
     def _deduplicate_and_merge_classical(self, rules: List[str], target_behavior: str = "classical") -> List[str]:
         buckets = {
@@ -827,24 +850,24 @@ class RulesMerger:
         return f"DST-PORT,{'/'.join(merged)}" if merged else None
 
     def _compile_final_sing_box_list(self, rules: List[Dict]) -> List[Dict]:
-        bucket = {key: [] for key in SING_BOX_LIST_FIELDS}
+        # Sets remove duplicates as values arrive, avoiding large duplicate-heavy lists.
+        bucket = {key: set() for key in SING_BOX_LIST_FIELDS}
         passthrough = []
 
         for rule in rules:
             if self._can_compact_sing_box_rule(rule):
-                for key in SING_BOX_LIST_FIELDS:
-                    if key in rule:
-                        values = self._as_list(rule[key])
-                        if key == "port":
-                            bucket[key].extend(int(v) if str(v).isdigit() else v for v in values)
-                        elif key == "network":
-                            bucket[key].extend(str(v).lower() for v in values)
-                        elif key in ("domain", "domain_suffix"):
-                            bucket[key].extend(str(v).lower().strip(".") for v in values)
-                        elif key in ("domain_keyword", "domain_regex"):
-                            bucket[key].extend(str(v) for v in values)
-                        else:
-                            bucket[key].extend(values)
+                for key, raw_values in rule.items():
+                    values = self._as_list(raw_values)
+                    if key == "port":
+                        bucket[key].update(int(v) if str(v).isdigit() else v for v in values)
+                    elif key == "network":
+                        bucket[key].update(str(v).lower() for v in values)
+                    elif key in ("domain", "domain_suffix"):
+                        bucket[key].update(str(v).lower().strip(".") for v in values)
+                    elif key in ("domain_keyword", "domain_regex"):
+                        bucket[key].update(str(v) for v in values)
+                    else:
+                        bucket[key].update(values)
             else:
                 passthrough.append(rule)
 
@@ -855,20 +878,20 @@ class RulesMerger:
             )
 
         for key in ("domain", "domain_suffix"):
-            remaining = []
+            remaining = set()
             for value in bucket[key]:
                 text = str(value)
                 if "*" in text:
                     wildcard = text if key == "domain" else f"+.{text}"
                     regex_value = self._wildcard_to_domain_regex(wildcard)
                     if regex_value:
-                        bucket["domain_regex"].append(regex_value)
+                        bucket["domain_regex"].add(regex_value)
                         continue
-                remaining.append(value)
+                remaining.add(value)
             bucket[key] = remaining
 
         if bucket["domain_regex"]:
-            bucket["domain_regex"] = list(dict.fromkeys(str(value).strip() for value in bucket["domain_regex"]))
+            bucket["domain_regex"] = {str(value).strip() for value in bucket["domain_regex"]}
 
         if bucket["ip_cidr"]:
             ipv4, ipv6 = [], []
@@ -876,36 +899,27 @@ class RulesMerger:
                 network = self._parse_ip_network(str(value))
                 if network:
                     (ipv4 if network.version == 4 else ipv6).append(network)
-
-            def prune(networks):
-                if not networks:
-                    return []
-                networks.sort(key=lambda n: (n.prefixlen, int(n.network_address)))
-                kept = []
-                for network in networks:
-                    if not any(network.subnet_of(parent) for parent in kept):
-                        kept.append(network)
-                return [network.with_prefixlen for network in kept]
-
-            bucket["ip_cidr"] = prune(ipv4) + prune(ipv6)
+            bucket["ip_cidr"] = {
+                network.with_prefixlen
+                for network in self._prune_networks(ipv4) + self._prune_networks(ipv6)
+            }
 
         if bucket["port"] or bucket["port_range"]:
             merged = self._merge_port_items(
                 [str(value) for value in bucket["port"]]
                 + [str(value).replace(":", "-") for value in bucket["port_range"]]
             )
-            bucket["port"], bucket["port_range"] = [], []
+            bucket["port"], bucket["port_range"] = set(), set()
             for value in merged:
                 if "-" in value:
-                    bucket["port_range"].append(value.replace("-", ":"))
+                    bucket["port_range"].add(value.replace("-", ":"))
                 else:
-                    bucket["port"].append(int(value))
+                    bucket["port"].add(int(value))
 
         compacted = []
         for key in SING_BOX_LIST_FIELDS:
             if values := bucket.get(key):
-                unique = list(dict.fromkeys(values))
-                unique = sorted(unique) if key == "port" else sorted(unique, key=str)
+                unique = sorted(values) if key == "port" else sorted(values, key=str)
                 compacted.append({key: unique})
 
         seen, final = set(), []
@@ -936,14 +950,32 @@ class RulesMerger:
             logger.warning("没有有效的规则集配置")
             return
 
-        logger.info("共 %s 个规则集，开始各自独立并行处理...", len(configs))
-        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            futures = [executor.submit(self._process_one_ruleset, cfg) for cfg in configs]
-            for future in as_completed(futures):
+        if self.max_workers == 1:
+            self.ruleset_workers = 1
+            self.source_workers = 1
+        else:
+            self.ruleset_workers = min(8, max(1, self.max_workers // 2), len(configs))
+            self.source_workers = max(
+                1, (self.max_workers - self.ruleset_workers) // self.ruleset_workers
+            )
+        logger.info(
+            "共 %s 个规则集，开始并行处理 (规则集线程=%s, 每个规则集上游线程上限=%s, 总并发预算=%s)...",
+            len(configs), self.ruleset_workers, self.source_workers, self.max_workers
+        )
+        if self.max_workers == 1:
+            for cfg in configs:
                 try:
-                    future.result()
+                    self._process_one_ruleset(cfg)
                 except Exception as exc:
                     logger.error("规则集处理抛出未捕获的异常: %s", exc)
+        else:
+            with ThreadPoolExecutor(max_workers=self.ruleset_workers) as executor:
+                futures = [executor.submit(self._process_one_ruleset, cfg) for cfg in configs]
+                for future in as_completed(futures):
+                    try:
+                        future.result()
+                    except Exception as exc:
+                        logger.error("规则集处理抛出未捕获的异常: %s", exc)
 
         logger.info("全部规则集处理完毕。")
         if self.push_enabled:
@@ -959,6 +991,7 @@ class RulesMerger:
 
         total_raw, dropped = len(raw_rules), 0
         converted = []
+        transform_cache = {}
         for rule in raw_rules:
             if rule is None or rule == "":
                 continue
@@ -972,7 +1005,17 @@ class RulesMerger:
                 elif rule.startswith(".") and not rule.startswith(".."):
                     rule = "+." + rule[1:]
 
-            transformed = self._transform(rule, source_behavior, target_behavior)
+                cached = transform_cache.get(rule)
+                if cached is None:
+                    transformed = self._transform(rule, source_behavior, target_behavior)
+                    cached = tuple(transformed) if transformed else ()
+                    # Bound cache growth for very large feeds containing mostly unique rules.
+                    if len(transform_cache) < 65536:
+                        transform_cache[rule] = cached
+                transformed = cached
+            else:
+                transformed = self._transform(rule, source_behavior, target_behavior)
+
             if transformed:
                 converted.extend(transformed)
             else:
@@ -997,7 +1040,7 @@ class RulesMerger:
             all_converted = []
             total_raw = total_dropped = 0
             if sources:
-                workers = max(1, min(self.max_workers, len(sources)))
+                workers = max(1, min(self.source_workers, len(sources)))
                 with ThreadPoolExecutor(max_workers=workers) as executor:
                     futures = [
                         executor.submit(self._process_one_source, source, target_behavior, path)
