@@ -5,44 +5,61 @@ on:
     - cron: '0 */4 * * *'
   workflow_dispatch:
 
+# 防止定时任务和手动任务并发修改同一分支
+concurrency:
+  group: rules-merger-rule-set
+  cancel-in-progress: true
+
+permissions:
+  contents: write
 
 jobs:
   run:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
 
-      - name: Set up Python 3.10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-          cache: 'pip'
+          cache: pip
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
-      - name: Set up Mihomo latest
+      - name: Set up Mihomo
         run: |
           LATEST_TAG=$(curl -fsSL https://github.com/MetaCubeX/mihomo/releases/latest/download/version.txt)
-          curl -fsSL -o mihomo.gz https://github.com/MetaCubeX/mihomo/releases/download/${LATEST_TAG}/mihomo-linux-amd64-${LATEST_TAG}.gz
-          gunzip mihomo.gz
-          sudo mv mihomo /usr/local/bin/
-          sudo chmod +x /usr/local/bin/mihomo
+          curl -fsSL -o /tmp/mihomo.gz \
+            "https://github.com/MetaCubeX/mihomo/releases/download/${LATEST_TAG}/mihomo-linux-amd64-${LATEST_TAG}.gz"
+          gunzip /tmp/mihomo.gz
+          sudo install -m 755 /tmp/mihomo /usr/local/bin/mihomo
           mihomo -v
 
       - name: Set up sing-box
         run: |
           VERSION=1.15.0-alpha.13
-          curl -fsSL -o sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/download/v${VERSION}/sing-box-${VERSION}-linux-amd64.tar.gz
-          tar -xzf sing-box.tar.gz
-          sudo mv sing-box-${VERSION}-linux-amd64/sing-box /usr/local/bin/
-          sudo chmod +x /usr/local/bin/sing-box
+
+          curl -fsSL -o /tmp/sing-box.tar.gz \
+            "https://github.com/SagerNet/sing-box/releases/download/v${VERSION}/sing-box-${VERSION}-linux-amd64.tar.gz"
+
+          tar -xzf /tmp/sing-box.tar.gz -C /tmp
+
+          sudo install -m 755 \
+            "/tmp/sing-box-${VERSION}-linux-amd64/sing-box" \
+            /usr/local/bin/sing-box
+
           sing-box version
 
       - name: Run script
         run: python rules_merger.py
 
+      # 将 output 中的规则文件移动到仓库根目录
       - name: Clean up
         run: |
           cp -a output/. .
@@ -50,12 +67,15 @@ jobs:
 
       - name: Get current time
         id: time
-        run: echo "TIME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+        run: |
+          echo "TIME=$(date +'%Y-%m-%d %H:%M:%S')" >> "$GITHUB_OUTPUT"
 
       - name: Commit Changes
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: 🚀 Update at ${{ steps.time.outputs.TIME }}
+          commit_message: "🚀 Update at ${{ steps.time.outputs.TIME }}"
           branch: rule_set
-          skip_dirty_check: true
           create_branch: true
+          skip_dirty_check: false
+          skip_fetch: false
+          skip_checkout: false
