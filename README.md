@@ -1,5 +1,9 @@
 # Rule Merger
 
+## 规则集见
+
+ - https://github.com/Harrykane-der/ruleset-for-singbox-and-mihomo/tree/rule_set
+
 ![Python Version](https://img.shields.io/badge/Python-3%2B-blue?)
 ![Build Status](https://img.shields.io/github/actions/workflow/status/xndeye/rule-merger/resolve.yml?branch=master)
 
@@ -57,9 +61,7 @@
    python rules_merger.py
    ```
 
-## 规则集见
 
- - https://github.com/Harrykane-der/ruleset-for-singbox-and-mihomo/tree/rule_set
 
 ## 引用来源
 
@@ -74,7 +76,7 @@
 - [MetaCubeX/MetaCubeX](https://github.com/MetaCubeX/meta-rules-dat/tree/meta)
 - [SagerNet/SagerNet](https://github.com/SagerNet/sing-geosite/tree/rule-set)
 - [SagerNet/SagerNet](https://github.com/SagerNet/sing-geoip/tree/rule-set)
-- [blackmatrix7/blackmatrix7](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash)
+- [blackmatrix7/blackmatrix7](https://github.co/blackmatrix7/ios_rule_script/tree/master/rule/Clash)
 ---
 
 [^1]: **mihomo** 可用格式：`yaml`、`mrs`、`text`，**sing-box** 可用格式：`json`、`srs`
