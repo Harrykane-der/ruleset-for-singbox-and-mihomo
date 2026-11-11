@@ -104,7 +104,7 @@ class RulesMerger:
             ("sing-box", "ipcidr"): self._sing_box_to_ipcidr
         }
 
-        self.push_enabled = self.push_config.get("enabled", False)
+        self.push_enabled = self.push_config.get("enabled", True)
         self.push_remote = self.push_config.get("remote", "origin")
         self.push_branch = self.push_config.get("branch", None)
 
