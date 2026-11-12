@@ -253,6 +253,11 @@
       url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-bilibili.json
       format: json
       behavior: sing-box
+    bilibili_domain:
+      type: file
+      path: local/bilibili_domain.yaml
+      format: yaml
+      behavior: dimain
 
 - path: output/bilibili_domain.yaml
   format: yaml
@@ -533,11 +538,11 @@
   format: mrs
   behavior: domain
   upstream: &direct_emby_domain_upstream
-    Harrykane-der_direct_emby_domain:
-      type: http
-      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/direct_emby.yaml
+    direct_emby_domain:
+      type: file
+      path: local/direct_emby_domain.yaml
       format: yaml
-      behavior: domain
+      behavior: dimain
 
 - path: output/direct_emby_domain.yaml
   format: yaml
@@ -587,11 +592,11 @@
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/fakeip-filter.yaml
       format: yaml
       behavior: domain
-    Harrykane-der_fakeip_filter_domain:
-      type: http
-      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/fakeip-filter.yaml
+    fakeip_filter_domain:
+      type: file
+      path: local/fakeip_filter_domain.yaml
       format: yaml
-      behavior: domain
+      behavior: dimain
     qichiyuhub_fakeip_filter_domain:
       type: http
       url: https://github.com/qichiyuhub/rule/raw/refs/heads/main/rules/fakeipfilter-!cn.json
@@ -650,11 +655,11 @@
   format: mrs
   behavior: domain
   upstream: &game_domain_upstream
-    Harrykane-der_game_domain:
-      type: http
-      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/game.yaml
+    game_domain:
+      type: file
+      path: local/game.yaml
       format: yaml
-      behavior: domain
+      behavior: dimain
 
 - path: output/game_domain.yaml
   format: yaml
@@ -679,11 +684,6 @@
   format: mrs
   behavior: domain
   upstream: &gfw_domain_upstream
-    xndeye_proxy_domain:
-      type: file
-      path: local/proxy.yaml
-      format: yaml
-      behavior: classical
     MetaCubeX_gfw_domain:
       type: http
       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/gfw.yaml
@@ -1204,11 +1204,11 @@
   format: mrs
   behavior: domain
   upstream: &proxy_emby_domain_upstream
-    Harrykane-der_proxy_emby_domain:
-      type: http
-      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/proxy_emby.yaml
+    proxy_emby_domain:
+      type: file
+      path: local/proxy_emby_domain.yaml
       format: yaml
-      behavior: domain
+      behavior: dimain
 
 - path: output/proxy_emby_domain.yaml
   format: yaml
@@ -1552,16 +1552,21 @@
   format: mrs
   behavior: domain
   upstream: &whitelist_domain_upstream
-    Harrykane-der_whitelist_domain:
-      type: http
-      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/whitelist.json
-      format: json
-      behavior: sing-box
-    ACL4SSR_UNBAN_domain:
+    ACL4SSR_unban_domain:
       type: http
       url: https://github.com/ACL4SSR/ACL4SSR/raw/refs/heads/master/Clash/UnBan.list
       format: text
       behavior: classical
+    anti_unban_domain:
+      type: http
+      url: https://raw.githubusercontent.com/privacy-protection-tools/dead-horse/master/anti-ad-white-for-clash.yaml
+      format: yaml
+      behavior: domain
+    whitelist_domain:
+      type: file
+      path: local/whitelist.yaml
+      format: yaml
+      behavior: dimain
 
 - path: output/whitelist_domain.yaml
   format: yaml
