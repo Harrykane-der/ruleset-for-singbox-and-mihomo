@@ -18,10 +18,15 @@
   behavior: domain
   upstream: &ablock_domain_upstream
     Harrykane-der_port_domain:
-      type: http
-      url: https://github.com/Harrykane-der/my-rules/raw/refs/heads/main/port.json
+      type: file
+      url: port.json
       format: json
       behavior: sing-box
+    ablock_domain:
+      type: file
+      path: local/ablock_domain.yaml
+      format: yaml
+      behavior: classical
 
 - path: output/ablock_domain.yaml
   format: yaml
