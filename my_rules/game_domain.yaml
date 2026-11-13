@@ -7,6 +7,4 @@ payload:
   - "DOMAIN-SUFFIX,konaminet.jp"
   - "DOMAIN-SUFFIX,konami.net"
   - "DOMAIN-SUFFIX,efootballhub.net"
-  - "DOMAIN-REGEX,^(.*\\.)?konami\\.[^.]+$"
-  - "DOMAIN-REGEX,^(.*\\.)?konami\\.[^.]+\\.[^.]+$"
-  - "DOMAIN-REGEX,^(.*\\.)?konami\\.[^.]+·[^.]+\\.[^.]+$"
+  - "DOMAIN-KEYWORD,konami
