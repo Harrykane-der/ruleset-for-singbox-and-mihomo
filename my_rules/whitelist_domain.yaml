@@ -653,8 +653,8 @@ payload:
   - "DOMAIN-SUFFIX,techsmith.com"
   - "DOMAIN-SUFFIX,binaryage.com"
   - "DOMAIN-SUFFIX,wisecleaner.com"
-
+  - "DOMAIN-SUFFIX,jbzj.com"
   # ==================== 3. 通配符与正则表达式规则 ====================
   - 'DOMAIN-REGEX,is[0-9]\-ssl\.mzstatic\.com'
   - 'DOMAIN-REGEX,^[a-zA-Z0-9-]*\.?adtidy\.org$'
-  - "DOMAIN-SUFFIX,jbzj.com"
+  - 'DOMAIN-KEYWORD,admin'
