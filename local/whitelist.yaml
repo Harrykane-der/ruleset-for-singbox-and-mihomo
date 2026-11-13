@@ -1,5 +1,6 @@
 payload:
   # ==================== 1. 完整域名 (DOMAIN / 严格匹配) ====================
+  - "wiki.metacubex.one"
   - "board.zash.run.place"
   - "alt7-mtalk.google.com"
   - "alt8-mtalk.google.com"
