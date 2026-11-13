@@ -1566,7 +1566,7 @@
       type: file
       path: local/whitelist.yaml
       format: yaml
-      behavior: dimain
+      behavior: classical
 
 - path: output/whitelist_domain.yaml
   format: yaml
