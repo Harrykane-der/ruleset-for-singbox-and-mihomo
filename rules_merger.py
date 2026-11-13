@@ -557,6 +557,18 @@ class RulesMerger:
     def _classical_to_ipcidr(self, rule: str) -> Optional[str]:
         return self._validate_ipcidr_rule(rule)
 
+    @staticmethod
+    def _keyword_to_domain_wildcards(keyword: str) -> List[str]:
+        """将关键词展开为 Mihomo domain 的 1～4 层通配规则。"""
+        value = str(keyword).strip()
+        if not value or any(ch in value for ch in ".,/\\"):
+            return []
+        # 关键词必须能作为一个完整域名标签使用；保留输入大小写。
+        if not re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?", value):
+            logger.warning("DOMAIN-KEYWORD 无法转换为独立域名标签，已跳过 [%s]", value)
+            return []
+        return [f"+.{value}." + ".".join(["*"] * depth) for depth in range(1, 5)]
+
     def _classical_to_domain(self, rule: str) -> Union[Optional[str], List[str]]:
         parts = rule.split(",", 1)
         if len(parts) != 2:
@@ -568,18 +580,10 @@ class RulesMerger:
                 suffix_hint=(prefix == "DOMAIN-SUFFIX")
             )
         if prefix == "DOMAIN-KEYWORD":
-            # DOMAIN-KEYWORD 的语义是对域名进行不区分大小写的字面子串匹配。
-            # 先转换成正则，再沿用 DOMAIN-REGEX 的内部标记管线，确保后续
-            # 聚合、YAML/JSON/文本输出及 MRS 预处理均原样保留正则。
-            if not value:
-                return None
-            pattern = f"(?i).*{re.escape(value)}.*"
-            try:
-                re.compile(pattern)
-            except re.error as exc:
-                logger.warning("DOMAIN-KEYWORD 转换正则失败，已跳过 [%s]: %s", value, exc)
-                return None
-            return DOMAIN_REGEX_MARKER + pattern
+            # 将关键词近似展开为 1～4 层独立域名标签通配规则。
+            # 例如 stun -> +.stun.*、+.stun.*.* ...
+            # 这不是任意标签内部子串匹配；仅覆盖关键词作为独立标签的情况。
+            return self._keyword_to_domain_wildcards(value)
         if prefix == "DOMAIN-REGEX":
             # Mihomo domain behavior 的 payload 可直接承载正则表达式。
             # 原样保留，不降级为 DOMAIN / DOMAIN-SUFFIX，也不改写正则语法。
@@ -622,47 +626,12 @@ class RulesMerger:
             or any(char in value for char in "[](){}|*+")
         )
 
-    @staticmethod
-    def _domain_regex_to_keyword(value: str) -> Optional[str]:
-        """仅还原由 DOMAIN-KEYWORD 生成的简单子串正则模板。
-
-        支持：.*keyword.* 和 (?i).*keyword.*。
-        内层必须是 re.escape(keyword) 的规范结果，避免把含有真正
-        正则运算符的表达式错误降级成 DOMAIN-KEYWORD。
-        """
-        if not isinstance(value, str):
-            return None
-        pattern = value.strip()
-        if pattern.startswith("(?i)"):
-            pattern = pattern[4:]
-        if not (pattern.startswith(".*") and pattern.endswith(".*")):
-            return None
-
-        escaped_literal = pattern[2:-2]
-        if not escaped_literal:
-            return None
-
-        # 只解码 re.escape() 产生的转义字符；随后通过重新转义做严格
-        # 往返校验。像 \d、\w、字符组、分组、选择、量词等真正正则
-        # 表达式不会通过此校验。
-        keyword = re.sub(r"\\([\\.^$*+?{}\[\]|()])", r"\1", escaped_literal)
-        if not keyword or re.escape(keyword) != escaped_literal:
-            return None
-        return keyword
-
     def _domain_to_classical(self, rule: str) -> Optional[str]:
         if not isinstance(rule, str):
             return None
         value = rule.strip()
         if not value:
             return None
-
-        # 先识别本脚本为 DOMAIN-KEYWORD 生成的正则模板。
-        # 必须放在普通域名规范化之前，因为 `.*keyword.*` 可能被宽松的
-        # wildcard 域名校验误判为普通通配域名。
-        keyword = self._domain_regex_to_keyword(value)
-        if keyword is not None:
-            return f"DOMAIN-KEYWORD,{keyword}"
 
         # 再识别 Mihomo 的普通域名/后缀/通配符写法，避免 +.example.com
         # 和 *.example.com 中的符号被误判为正则表达式。
@@ -672,7 +641,8 @@ class RulesMerger:
                 return f"DOMAIN-SUFFIX,{normalized[2:]}"
             return f"DOMAIN,{normalized}"
 
-        # 其他具有明确正则语法特征的表达式，完整保留为 DOMAIN-REGEX。
+        # domain behavior 的 payload 也允许直接存放正则。无法作为普通域名
+        # 规范化、且具有明确正则语法特征时，完整转换为 DOMAIN-REGEX。
         if self._looks_like_domain_regex(value):
             try:
                 re.compile(value)
@@ -804,6 +774,8 @@ class RulesMerger:
                 normalized = self._normalize_domain_value(str(suffix), suffix_hint=True)
                 if normalized:
                     result.append(normalized)
+            for keyword in self._as_list(item.get("domain_keyword")):
+                result.extend(self._keyword_to_domain_wildcards(str(keyword)))
         return result
 
     def _sing_box_to_ipcidr(self, rule: Union[Dict, str]) -> List[str]:
