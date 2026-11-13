@@ -1,0 +1,12 @@
+payload:
+  - "DOMAIN-REGEX,.*httpdns.*"
+  - "DOMAIN-REGEX,.*httpsdns.*"
+  - "DOMAIN-REGEX,.*stun.*"
+  - "DOMAIN-REGEX,.*turn.*"
+  - "DOMAIN-REGEX,.*pcdn.*"
+  - "DOMAIN-REGEX,.*p2p.*"
+  - "DOMAIN-REGEX,.*ad\\..*"
+  - "DOMAIN-REGEX,.*-ad.*"
+  - "DOMAIN-REGEX,.*ad-.*"
+  - "DOMAIN-REGEX,.*ads.*"
+  - "DOMAIN-REGEX,.*mcdn.*"
