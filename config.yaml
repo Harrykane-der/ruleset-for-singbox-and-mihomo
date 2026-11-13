@@ -24,7 +24,7 @@
       behavior: sing-box
     ablock_domain:
       type: file
-      path: local/ablock_domain.yaml
+      path: https://github.com/Harrykane-der/ruleset-for-singbox-and-mihomo/raw/refs/heads/master/my_rules/ablock_domain.yaml
       format: yaml
       behavior: classical
 
@@ -260,7 +260,7 @@
       behavior: sing-box
     bilibili_domain:
       type: file
-      path: local/bilibili_domain.yaml
+      path: https://github.com/Harrykane-der/ruleset-for-singbox-and-mihomo/raw/refs/heads/master/my_rules/bilibili_domain.yaml
       format: yaml
       behavior: classical
 
@@ -545,7 +545,7 @@
   upstream: &direct_emby_domain_upstream
     direct_emby_domain:
       type: file
-      path: local/direct_emby_domain.yaml
+      path: https://github.com/Harrykane-der/ruleset-for-singbox-and-mihomo/raw/refs/heads/master/my_rules/direct_emby_domain.yaml
       format: yaml
       behavior: classical
 
@@ -604,7 +604,7 @@
       behavior: sing-box
     fakeip_filter_domain:
       type: file
-      path: local/fakeip_filter_domain.yaml
+      path: https://github.com/Harrykane-der/ruleset-for-singbox-and-mihomo/raw/refs/heads/master/my_rules/fakeip_filter_domain.yaml
       format: yaml
       behavior: classical
 
@@ -662,7 +662,7 @@
   upstream: &game_domain_upstream
     game_domain:
       type: file
-      path: local/game_domain.yaml
+      path: https://github.com/Harrykane-der/ruleset-for-singbox-and-mihomo/raw/refs/heads/master/my_rules/game_domain.yaml
       format: yaml
       behavior: classical
 
@@ -1211,7 +1211,7 @@
   upstream: &proxy_emby_domain_upstream
     proxy_emby_domain:
       type: file
-      path: local/proxy_emby_domain.yaml
+      path: https://github.com/Harrykane-der/ruleset-for-singbox-and-mihomo/raw/refs/heads/master/my_rules/proxy_emby_domain.yaml
       format: yaml
       behavior: classical
 
@@ -1406,9 +1406,9 @@
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/douyin.yaml
       format: yaml
       behavior: domain
-    local_tiktok_domain:
+    https://github.com/Harrykane-der/ruleset-for-singbox-and-mihomo/raw/refs/heads/master/my_rules_tiktok_domain:
       type: file
-      path: local/tiktok_domain.yaml
+      path: https://github.com/Harrykane-der/ruleset-for-singbox-and-mihomo/raw/refs/heads/master/my_rules/tiktok_domain.yaml
       format: yaml
       behavior: classical
 
@@ -1568,8 +1568,8 @@
       format: yaml
       behavior: domain
     whitelist_domain:
-      type: file
-      path: local/whitelist_domain.yaml
+      type: http
+      url: https://github.com/Harrykane-der/ruleset-for-singbox-and-mihomo/raw/refs/heads/master/my_rules/whitelist_domain.yaml
       format: yaml
       behavior: classical
 
