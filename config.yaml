@@ -257,7 +257,7 @@
       type: file
       path: local/bilibili_domain.yaml
       format: yaml
-      behavior: dimain
+      behavior: classical
 
 - path: output/bilibili_domain.yaml
   format: yaml
@@ -542,7 +542,7 @@
       type: file
       path: local/direct_emby_domain.yaml
       format: yaml
-      behavior: dimain
+      behavior: classical
 
 - path: output/direct_emby_domain.yaml
   format: yaml
@@ -592,16 +592,16 @@
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/fakeip-filter.yaml
       format: yaml
       behavior: domain
-    fakeip_filter_domain:
-      type: file
-      path: local/fakeip_filter_domain.yaml
-      format: yaml
-      behavior: dimain
     qichiyuhub_fakeip_filter_domain:
       type: http
       url: https://github.com/qichiyuhub/rule/raw/refs/heads/main/rules/fakeipfilter-!cn.json
       format: json
       behavior: sing-box
+    fakeip_filter_domain:
+      type: file
+      path: local/fakeip_filter_domain.yaml
+      format: yaml
+      behavior: classical
 
 - path: output/fakeip_filter_!cn_domain.yaml
   format: yaml
@@ -657,9 +657,9 @@
   upstream: &game_domain_upstream
     game_domain:
       type: file
-      path: local/game.yaml
+      path: local/game_domain.yaml
       format: yaml
-      behavior: dimain
+      behavior: classical
 
 - path: output/game_domain.yaml
   format: yaml
@@ -1208,7 +1208,7 @@
       type: file
       path: local/proxy_emby_domain.yaml
       format: yaml
-      behavior: dimain
+      behavior: classical
 
 - path: output/proxy_emby_domain.yaml
   format: yaml
@@ -1391,11 +1391,6 @@
       url: https://github.com/lyc8503/sing-box-rules/raw/refs/heads/rule-set-geosite/geosite-tiktok.json
       format: json
       behavior: sing-box
-    local_tiktok_domain:
-      type: file
-      path: local/tiktok.yaml
-      format: yaml
-      behavior: classical
     appshubcc_tiktok_domain:
       type: http
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/tiktok.yaml
@@ -1406,6 +1401,11 @@
       url: https://github.com/appshubcc/bett-rules/raw/refs/heads/meta/geo/geosite/douyin.yaml
       format: yaml
       behavior: domain
+    local_tiktok_domain:
+      type: file
+      path: local/tiktok_domain.yaml
+      format: yaml
+      behavior: classical
 
 - path: output/tiktok_domain.yaml
   format: yaml
@@ -1564,7 +1564,7 @@
       behavior: domain
     whitelist_domain:
       type: file
-      path: local/whitelist.yaml
+      path: local/whitelist_domain.yaml
       format: yaml
       behavior: classical
 
