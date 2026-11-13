@@ -1,7 +1,7 @@
 payload:
-  - +.eoos.top
-  - "yy.eoos.lol"
-  - "s3.array2026.com"
-  - "+.gy1.66990000.xyz"
-  - "+.emby.yun"
-  - "+.emby.bangumi.ca"
+  - DOMAIN-SUFFIX,eoos.top
+  - DOMAIN,yy.eoos.lol
+  - DOMAIN,s3.array2026.com
+  - DOMAIN-SUFFIX,gy1.66990000.xyz
+  - DOMAIN-SUFFIX,emby.yun
+  - DOMAIN-SUFFIX,emby.bangumi.ca
