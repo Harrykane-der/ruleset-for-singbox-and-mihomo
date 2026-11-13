@@ -28,6 +28,7 @@ DOMAIN_PATTERN = re.compile(
     r"(?:\.(?:\*|[a-zA-Z0-9*](?:[a-zA-Z0-9*-]*[a-zA-Z0-9*])?))*$"
 )
 PORT_PATTERN = re.compile(r"^\d+(?:-\d+)?$")
+DOMAIN_REGEX_MARKER = "\x00DOMAIN_REGEX:"  # 内部标记：避免正则被普通域名归一化/合并
 JSON_COMMENT_PATTERN = re.compile(
     r'//.*?$|/\*.*?\*/|"(?:\\.|[^\\"])*"',
     re.DOTALL | re.MULTILINE
@@ -556,17 +557,41 @@ class RulesMerger:
     def _classical_to_ipcidr(self, rule: str) -> Optional[str]:
         return self._validate_ipcidr_rule(rule)
 
-    def _classical_to_domain(self, rule: str) -> Optional[str]:
+    def _classical_to_domain(self, rule: str) -> Union[Optional[str], List[str]]:
         parts = rule.split(",", 1)
         if len(parts) != 2:
             return None
-        prefix, domain = parts[0].strip().upper(), parts[1].strip()
-        if prefix not in ("DOMAIN", "DOMAIN-SUFFIX"):
-            return None
-        return self._normalize_domain_value(
-            domain,
-            suffix_hint=(prefix == "DOMAIN-SUFFIX")
-        )
+        prefix, value = parts[0].strip().upper(), parts[1].strip()
+        if prefix in ("DOMAIN", "DOMAIN-SUFFIX"):
+            return self._normalize_domain_value(
+                value,
+                suffix_hint=(prefix == "DOMAIN-SUFFIX")
+            )
+        if prefix == "DOMAIN-KEYWORD":
+            # DOMAIN-KEYWORD 的语义是对域名进行不区分大小写的字面子串匹配。
+            # 先转换成正则，再沿用 DOMAIN-REGEX 的内部标记管线，确保后续
+            # 聚合、YAML/JSON/文本输出及 MRS 预处理均原样保留正则。
+            if not value:
+                return None
+            pattern = f"(?i).*{re.escape(value)}.*"
+            try:
+                re.compile(pattern)
+            except re.error as exc:
+                logger.warning("DOMAIN-KEYWORD 转换正则失败，已跳过 [%s]: %s", value, exc)
+                return None
+            return DOMAIN_REGEX_MARKER + pattern
+        if prefix == "DOMAIN-REGEX":
+            # Mihomo domain behavior 的 payload 可直接承载正则表达式。
+            # 原样保留，不降级为 DOMAIN / DOMAIN-SUFFIX，也不改写正则语法。
+            if not value:
+                return None
+            try:
+                re.compile(value)
+            except re.error as exc:
+                logger.warning("无效 DOMAIN-REGEX，已跳过 [%s]: %s", value, exc)
+                return None
+            return DOMAIN_REGEX_MARKER + value
+        return None
 
     def _ipcidr_to_classical(self, rule: str) -> Optional[str]:
         network = self._parse_ip_network(rule)
@@ -575,14 +600,53 @@ class RulesMerger:
             return f"{prefix},{network.with_prefixlen}"
         return None
 
-    def _domain_to_classical(self, rule: str) -> Optional[str]:
-        normalized = self._normalize_domain_value(rule)
-        if not normalized:
-            return None
-        if normalized.startswith("+."):
-            return f"DOMAIN-SUFFIX,{normalized[2:]}"
-        return f"DOMAIN,{normalized}"
+    @staticmethod
+    def _looks_like_domain_regex(value: str) -> bool:
+        """识别 domain behavior payload 中的正则表达式。
 
+        domain 格式没有单独的规则类型字段，因此无法区分纯字母正则
+        （例如 `google`）和同名普通域名。这里仅把具有明确正则语法特征
+        的内容识别为 DOMAIN-REGEX，避免误把普通域名当成正则。
+        """
+        if not isinstance(value, str):
+            return False
+        value = value.strip()
+        if not value:
+            return False
+        # 常见且具有明确含义的正则元字符/结构：锚点、转义、字符组、
+        # 分组、选择、量词及通配表达式。普通域名中的连字符不在其中。
+        return bool(
+            value.startswith(("^", "(?"))
+            or value.endswith("$")
+            or "\\" in value
+            or any(char in value for char in "[](){}|*+")
+        )
+
+    def _domain_to_classical(self, rule: str) -> Optional[str]:
+        if not isinstance(rule, str):
+            return None
+        value = rule.strip()
+        if not value:
+            return None
+
+        # 先识别 Mihomo 的普通域名/后缀/通配符写法，避免 +.example.com
+        # 和 *.example.com 中的符号被误判为正则表达式。
+        normalized = self._normalize_domain_value(value)
+        if normalized:
+            if normalized.startswith("+."):
+                return f"DOMAIN-SUFFIX,{normalized[2:]}"
+            return f"DOMAIN,{normalized}"
+
+        # domain behavior 的 payload 也允许直接存放正则。无法作为普通域名
+        # 规范化、且具有明确正则语法特征时，完整转换为 DOMAIN-REGEX。
+        if self._looks_like_domain_regex(value):
+            try:
+                re.compile(value)
+            except re.error as exc:
+                logger.warning("domain 转 classical 跳过无效正则 [%s]: %s", value, exc)
+                return None
+            return f"DOMAIN-REGEX,{value}"
+        return None
     def _classical_to_sing_box(self, rule: str) -> Optional[str]:
         parts = [part.strip() for part in rule.split(",")]
         if not parts or not parts[0]:
@@ -745,11 +809,24 @@ class RulesMerger:
 
     def _deduplicate_and_merge_domain(self, rules: List[Any]) -> List[str]:
         exact, suffix, wildcard = [], [], []
+        regex_rules = []
         for raw in rules:
             if not isinstance(raw, str):
                 continue
             rule = self._clean_rule(raw)
             if not rule:
+                continue
+
+            # 正则使用内部标记独立保存，避免被域名规范化、通配符转换，
+            # 或父子域名去重逻辑误处理。输出时去掉标记，保留原始表达式。
+            if rule.startswith(DOMAIN_REGEX_MARKER):
+                pattern = rule[len(DOMAIN_REGEX_MARKER):]
+                if pattern:
+                    try:
+                        re.compile(pattern)
+                        regex_rules.append(pattern)
+                    except re.error as exc:
+                        logger.warning("无效 DOMAIN-REGEX，聚合时跳过 [%s]: %s", pattern, exc)
                 continue
 
             suffix_hint = False
@@ -762,6 +839,15 @@ class RulesMerger:
                     pass
                 elif prefix == "DOMAIN-SUFFIX":
                     suffix_hint = True
+                elif prefix == "DOMAIN-REGEX":
+                    # 兼容直接进入聚合器的 classical 规则。
+                    if value:
+                        try:
+                            re.compile(value)
+                            regex_rules.append(value)
+                        except re.error as exc:
+                            logger.warning("无效 DOMAIN-REGEX，聚合时跳过 [%s]: %s", value, exc)
+                    continue
                 else:
                     continue
                 normalized = self._normalize_domain_value(value, suffix_hint)
@@ -780,6 +866,7 @@ class RulesMerger:
         exact, suffix = self._unified_domain_deduplication(exact, suffix)
         result = [*exact, *(f"+.{value}" for value in suffix)]
         result.extend(sorted(set(wildcard)))
+        result.extend(DOMAIN_REGEX_MARKER + pattern for pattern in dict.fromkeys(regex_rules))
         return result
 
     def _deduplicate_and_merge_ipcidr(self, rules: List[Any]) -> List[str]:
@@ -1107,9 +1194,18 @@ class RulesMerger:
                 if network:
                     cleaned.append(network.with_prefixlen)
             elif behavior == "domain":
-                normalized = self._normalize_domain_value(value)
-                if normalized:
-                    cleaned.append(normalized)
+                # domain behavior 中的正则原样保留；普通域名仍走规范化。
+                if value.startswith(DOMAIN_REGEX_MARKER):
+                    pattern = value[len(DOMAIN_REGEX_MARKER):]
+                    try:
+                        re.compile(pattern)
+                        cleaned.append(pattern)
+                    except re.error as exc:
+                        logger.warning("MRS 输出跳过无效正则 [%s]: %s", pattern, exc)
+                else:
+                    normalized = self._normalize_domain_value(value)
+                    if normalized:
+                        cleaned.append(normalized)
             else:
                 cleaned.append(value)
         return list(dict.fromkeys(cleaned))
@@ -1148,17 +1244,35 @@ class RulesMerger:
                     return
 
             elif rule_format == "json":
+                output_rules = [
+                    rule[len(DOMAIN_REGEX_MARKER):]
+                    if isinstance(rule, str) and rule.startswith(DOMAIN_REGEX_MARKER)
+                    else rule
+                    for rule in rules
+                ]
                 with open(output_path, "w", encoding="utf-8") as f:
-                    json.dump({"version": version, "rules": rules}, f, ensure_ascii=False, indent=2)
+                    json.dump({"version": version, "rules": output_rules}, f, ensure_ascii=False, indent=2)
 
             elif rule_format == "yaml":
+                output_rules = [
+                    rule[len(DOMAIN_REGEX_MARKER):]
+                    if isinstance(rule, str) and rule.startswith(DOMAIN_REGEX_MARKER)
+                    else rule
+                    for rule in rules
+                ]
                 with open(output_path, "w", encoding="utf-8") as f:
-                    yaml.dump({"payload": rules}, f, allow_unicode=True, sort_keys=False)
+                    yaml.dump({"payload": output_rules}, f, allow_unicode=True, sort_keys=False)
 
             else:
                 with open(output_path, "w", encoding="utf-8") as f:
                     f.write(f"# Update: {datetime.now():%Y-%m-%d %H:%M:%S} | Total: {len(rules)}\n")
-                    f.write("\n".join(str(rule) for rule in rules) + "\n")
+                    output_rules = [
+                        rule[len(DOMAIN_REGEX_MARKER):]
+                        if isinstance(rule, str) and rule.startswith(DOMAIN_REGEX_MARKER)
+                        else str(rule)
+                        for rule in rules
+                    ]
+                    f.write("\n".join(output_rules) + "\n")
 
             logger.info("[%s] 规则集写入完成，最终规则数: %s", output_path, len(rules))
         except Exception as exc:
