@@ -622,6 +622,34 @@ class RulesMerger:
             or any(char in value for char in "[](){}|*+")
         )
 
+    @staticmethod
+    def _domain_regex_to_keyword(value: str) -> Optional[str]:
+        """仅还原由 DOMAIN-KEYWORD 生成的简单子串正则模板。
+
+        支持：.*keyword.* 和 (?i).*keyword.*。
+        内层必须是 re.escape(keyword) 的规范结果，避免把含有真正
+        正则运算符的表达式错误降级成 DOMAIN-KEYWORD。
+        """
+        if not isinstance(value, str):
+            return None
+        pattern = value.strip()
+        if pattern.startswith("(?i)"):
+            pattern = pattern[4:]
+        if not (pattern.startswith(".*") and pattern.endswith(".*")):
+            return None
+
+        escaped_literal = pattern[2:-2]
+        if not escaped_literal:
+            return None
+
+        # 只解码 re.escape() 产生的转义字符；随后通过重新转义做严格
+        # 往返校验。像 \d、\w、字符组、分组、选择、量词等真正正则
+        # 表达式不会通过此校验。
+        keyword = re.sub(r"\\([\\.^$*+?{}\[\]|()])", r"\1", escaped_literal)
+        if not keyword or re.escape(keyword) != escaped_literal:
+            return None
+        return keyword
+
     def _domain_to_classical(self, rule: str) -> Optional[str]:
         if not isinstance(rule, str):
             return None
@@ -629,7 +657,14 @@ class RulesMerger:
         if not value:
             return None
 
-        # 先识别 Mihomo 的普通域名/后缀/通配符写法，避免 +.example.com
+        # 先识别本脚本为 DOMAIN-KEYWORD 生成的正则模板。
+        # 必须放在普通域名规范化之前，因为 `.*keyword.*` 可能被宽松的
+        # wildcard 域名校验误判为普通通配域名。
+        keyword = self._domain_regex_to_keyword(value)
+        if keyword is not None:
+            return f"DOMAIN-KEYWORD,{keyword}"
+
+        # 再识别 Mihomo 的普通域名/后缀/通配符写法，避免 +.example.com
         # 和 *.example.com 中的符号被误判为正则表达式。
         normalized = self._normalize_domain_value(value)
         if normalized:
@@ -637,8 +672,7 @@ class RulesMerger:
                 return f"DOMAIN-SUFFIX,{normalized[2:]}"
             return f"DOMAIN,{normalized}"
 
-        # domain behavior 的 payload 也允许直接存放正则。无法作为普通域名
-        # 规范化、且具有明确正则语法特征时，完整转换为 DOMAIN-REGEX。
+        # 其他具有明确正则语法特征的表达式，完整保留为 DOMAIN-REGEX。
         if self._looks_like_domain_regex(value):
             try:
                 re.compile(value)
