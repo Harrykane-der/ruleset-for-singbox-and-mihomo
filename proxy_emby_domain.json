@@ -1,0 +1,27 @@
+{
+  "version": 5,
+  "rules": [
+    {
+      "domain_suffix": [
+        "789.123456.al",
+        "cdn.135505.autos",
+        "cf.imetyou.top",
+        "cf.xmsl.org",
+        "cn2gias.uk",
+        "emby.bangumi.ca",
+        "emby.dnscf.dpdns.org",
+        "emby.ichinosekotomi.com",
+        "emby.pilipiliultra.com",
+        "emby.teawaya.com",
+        "emby.wtf",
+        "embyplus.org",
+        "genshin.biliblili.uk",
+        "okemby.org",
+        "shrekmedia.org",
+        "vipdc.covh.eu.org",
+        "yykx.top",
+        "zzm.li"
+      ]
+    }
+  ]
+}

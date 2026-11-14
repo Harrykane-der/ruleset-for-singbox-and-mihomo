@@ -1,0 +1,34 @@
+{
+  "version": 5,
+  "rules": [
+    {
+      "domain_keyword": [
+        "ad",
+        "ads",
+        "adservice",
+        "adservices",
+        "httpdns",
+        "httpsdns",
+        "mcdn",
+        "p2p",
+        "pcdn",
+        "stun",
+        "turn"
+      ]
+    },
+    {
+      "port": [
+        53,
+        853,
+        9681
+      ]
+    },
+    {
+      "port_range": [
+        "19302:19310",
+        "3478:3481",
+        "5349:5351"
+      ]
+    }
+  ]
+}
