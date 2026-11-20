@@ -1,4 +1,5 @@
 payload:
+  - DOMAIN,firebaselogging-pa.googleapis.com
   - DOMAIN-SUFFIX,cloudfront.net
   - DOMAIN-SUFFIX,bc.googleusercontent.com
   - DOMAIN-SUFFIX,people.aws.dev
